@@ -43,11 +43,11 @@ export function resolveDatabaseConfig(): DatabaseConfig {
   return { type: 'sqlite', sqlite: { path: sqlitePath } };
 }
 
-export async function createDataStore(config?: DatabaseConfig): Promise<DataStore> {
+export async function createDataStore(config?: DatabaseConfig, embeddingDimensions?: number): Promise<DataStore> {
   const dbConfig = config || resolveDatabaseConfig();
 
   if (dbConfig.type === 'postgres' && dbConfig.postgres) {
-    logger.info('Using PostgreSQL database', { host: dbConfig.postgres.host });
+    logger.info('Using PostgreSQL database', { host: dbConfig.postgres.host, database: dbConfig.postgres.database });
     const store = new PostgresStore({
       host: dbConfig.postgres.host,
       port: dbConfig.postgres.port,
@@ -55,7 +55,7 @@ export async function createDataStore(config?: DatabaseConfig): Promise<DataStor
       user: dbConfig.postgres.user,
       password: dbConfig.postgres.password,
       ssl: dbConfig.postgres.ssl ? { rejectUnauthorized: false } : false,
-    });
+    }, embeddingDimensions);
     await store.initialize();
     return store;
   }

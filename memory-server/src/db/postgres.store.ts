@@ -8,9 +8,11 @@ import { logger } from '../utils/logger';
 
 export class PostgresStore implements DataStore {
   private pool: Pool;
+  private embeddingDimensions: number;
 
-  constructor(config: PoolConfig) {
+  constructor(config: PoolConfig, embeddingDimensions = 1536) {
     this.pool = new Pool(config);
+    this.embeddingDimensions = embeddingDimensions;
   }
 
   async initialize(): Promise<void> {
@@ -27,7 +29,7 @@ export class PostgresStore implements DataStore {
           strand TEXT NOT NULL DEFAULT 'general',
           tags JSONB DEFAULT '[]'::jsonb,
           metadata JSONB DEFAULT '{}'::jsonb,
-          embedding vector(1536),
+          embedding vector(${this.embeddingDimensions}),
           signal DOUBLE PRECISION NOT NULL DEFAULT 0.5,
           pulse_rate DOUBLE PRECISION NOT NULL DEFAULT 0.1,
           access_count INTEGER NOT NULL DEFAULT 0,

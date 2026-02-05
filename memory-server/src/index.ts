@@ -20,13 +20,13 @@ async function bootstrap(): Promise<void> {
   const port = parseInt(process.env.NS_PORT || '3000', 10);
   const host = process.env.NS_HOST || '0.0.0.0';
 
-  // 1. Initialize database
-  logger.info('Initializing database...');
-  const store = await createDataStore();
-
-  // 2. Create providers
+  // 1. Create providers
   logger.info('Creating AI providers...');
   const { embedder, completion } = ProviderFactory.createFromEnv();
+
+  // 2. Initialize database
+  logger.info('Initializing database...');
+  const store = await createDataStore(undefined, embedder.dimensions);
 
   // 3. Wire services
   const memoryService = new MemoryService(store, embedder, completion);
