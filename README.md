@@ -1,4 +1,4 @@
-# NeuroStore
+# Hippocampus
 
 A self-hosted memory engine for AI agents and applications. Store, search, and recall memories with semantic understanding, temporal awareness, and associative linking.
 
@@ -28,8 +28,8 @@ A self-hosted memory engine for AI agents and applications. Store, search, and r
 ### Installation
 
 ```bash
-git clone https://github.com/your-org/neurostore.git
-cd neurostore/memory-server
+git clone https://github.com/juspay/hippocampus.git
+cd hippocampus/memory-server
 npm install
 ```
 
@@ -39,16 +39,16 @@ npm install
 npm run dev
 ```
 
-Server starts at `http://localhost:3000`. Data stored in `./data/neurostore.sqlite`.
+Server starts at `http://localhost:4477`. Data stored in `./data/hippocampus.sqlite`.
 
 ### Run with PostgreSQL + pgvector
 
 ```bash
-export NS_PG_HOST=localhost
-export NS_PG_PORT=5432
-export NS_PG_USER=postgres
-export NS_PG_PASSWORD=yourpassword
-export NS_PG_DATABASE=neurostore
+export HC_PG_HOST=localhost
+export HC_PG_PORT=5432
+export HC_PG_USER=postgres
+export HC_PG_PASSWORD=yourpassword
+export HC_PG_DATABASE=hippocampus
 
 npm run dev
 ```
@@ -56,7 +56,7 @@ npm run dev
 ### Verify
 
 ```bash
-curl http://localhost:3000/api/health
+curl http://localhost:4477/api/health
 # {"status":"ok","database":"sqlite","timestamp":"..."}
 ```
 
@@ -65,7 +65,7 @@ curl http://localhost:3000/api/health
 ### Store a Memory
 
 ```bash
-curl -X POST http://localhost:3000/api/engrams \
+curl -X POST http://localhost:4477/api/engrams \
   -H "Content-Type: application/json" \
   -d '{
     "ownerId": "user-123",
@@ -77,7 +77,7 @@ curl -X POST http://localhost:3000/api/engrams \
 ### Search Memories
 
 ```bash
-curl -X POST http://localhost:3000/api/engrams/search \
+curl -X POST http://localhost:4477/api/engrams/search \
   -H "Content-Type: application/json" \
   -d '{
     "ownerId": "user-123",
@@ -116,7 +116,7 @@ Response includes retrieval traces showing how each result was scored:
 
 ```bash
 # Record current phone
-curl -X POST http://localhost:3000/api/chronicles \
+curl -X POST http://localhost:4477/api/chronicles \
   -H "Content-Type: application/json" \
   -d '{
     "ownerId": "user-123",
@@ -126,19 +126,19 @@ curl -X POST http://localhost:3000/api/chronicles \
   }'
 
 # Query current fact
-curl "http://localhost:3000/api/chronicles/current?ownerId=user-123&entity=user-123&attribute=phone"
+curl "http://localhost:4477/api/chronicles/current?ownerId=user-123&entity=user-123&attribute=phone"
 
 # View full timeline
-curl "http://localhost:3000/api/chronicles/timeline?ownerId=user-123&entity=user-123"
+curl "http://localhost:4477/api/chronicles/timeline?ownerId=user-123&entity=user-123"
 ```
 
 ### Using the SDK
 
 ```typescript
-import { NeuroStoreClient } from '@neurostore/sdk';
+import { HippocampusClient } from '@juspay/hippocampus-sdk';
 
-const client = new NeuroStoreClient({
-  baseUrl: 'http://localhost:3000',
+const client = new HippocampusClient({
+  baseUrl: 'http://localhost:4477',
   apiKey: 'your-api-key'  // optional
 });
 
@@ -169,18 +169,18 @@ cp .env.example .env
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `NS_PORT` | `3000` | Server port |
-| `NS_HOST` | `0.0.0.0` | Server host |
-| `NS_API_KEY` | (none) | API key for authentication (optional) |
-| `NS_PG_HOST` | (none) | PostgreSQL host (enables Postgres mode) |
-| `NS_PG_PORT` | `5432` | PostgreSQL port |
-| `NS_PG_DATABASE` | `neurostore` | PostgreSQL database name |
-| `NS_PG_USER` | `postgres` | PostgreSQL user |
-| `NS_PG_PASSWORD` | (none) | PostgreSQL password |
-| `NS_SQLITE_PATH` | `./data/neurostore.sqlite` | SQLite file path |
-| `NS_EMBEDDER_PROVIDER` | `native` | Embedding provider: `native`, `openai`, `ollama` |
-| `NS_OPENAI_API_KEY` | (none) | OpenAI API key (if using openai provider) |
-| `NS_OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
+| `HC_PORT` | `4477` | Server port |
+| `HC_HOST` | `0.0.0.0` | Server host |
+| `HC_API_KEY` | (none) | API key for authentication (optional) |
+| `HC_PG_HOST` | (none) | PostgreSQL host (enables Postgres mode) |
+| `HC_PG_PORT` | `5432` | PostgreSQL port |
+| `HC_PG_DATABASE` | `hippocampus` | PostgreSQL database name |
+| `HC_PG_USER` | `postgres` | PostgreSQL user |
+| `HC_PG_PASSWORD` | (none) | PostgreSQL password |
+| `HC_SQLITE_PATH` | `./data/hippocampus.sqlite` | SQLite file path |
+| `HC_EMBEDDER_PROVIDER` | `native` | Embedding provider: `native`, `openai`, `ollama` |
+| `HC_OPENAI_API_KEY` | (none) | OpenAI API key (if using openai provider) |
+| `HC_OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
 
 ### Embedding Providers
 
@@ -235,7 +235,7 @@ The native embedder is suitable for development and testing. Use OpenAI or Ollam
 
 ## Data Model
 
-NeuroStore uses four core data structures:
+Hippocampus uses four core data structures:
 
 ### Engrams
 
@@ -283,7 +283,7 @@ See [memory-server/docs/database-schema.md](./memory-server/docs/database-schema
 
 ## Search Algorithm
 
-NeuroStore uses a multi-signal retrieval pipeline:
+Hippocampus uses a multi-signal retrieval pipeline:
 
 ```
 finalScore = (0.30 × vectorScore)      // semantic similarity
@@ -320,24 +320,24 @@ npm run test:sdk      # SDK integration tests
 cd memory-server
 
 # Build
-docker build -t neurostore .
+docker build -t hippocampus .
 
 # Run with SQLite
-docker run -p 3000:3000 neurostore
+docker run -p 4477:4477 hippocampus
 
 # Run with PostgreSQL
-docker run -p 3000:3000 \
-  -e NS_PG_HOST=host.docker.internal \
-  -e NS_PG_DATABASE=neurostore \
-  -e NS_PG_USER=postgres \
-  -e NS_PG_PASSWORD=yourpassword \
-  neurostore
+docker run -p 4477:4477 \
+  -e HC_PG_HOST=host.docker.internal \
+  -e HC_PG_DATABASE=hippocampus \
+  -e HC_PG_USER=postgres \
+  -e HC_PG_PASSWORD=yourpassword \
+  hippocampus
 ```
 
 ## Project Structure
 
 ```
-neurostore/
+hippocampus/
 ├── memory-server/           # Backend server
 │   ├── src/
 │   │   ├── api/             # Controllers, middleware, routes
@@ -354,9 +354,9 @@ neurostore/
 │
 ├── memory-sdk/              # TypeScript client SDK
 │   ├── src/
-│   │   ├── client.ts        # NeuroStoreClient
+│   │   ├── client.ts        # HippocampusClient
 │   │   ├── types.ts         # Request/response types
-│   │   └── errors.ts        # NeuroStoreError
+│   │   └── errors.ts        # HippocampusError
 │   └── package.json
 │
 └── README.md

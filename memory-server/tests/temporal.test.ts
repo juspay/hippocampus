@@ -56,7 +56,7 @@ class MockCompletion implements CompletionProvider {
 }
 
 async function run() {
-  console.log('\n🧪 NeuroStore Temporal Integration Tests\n');
+  console.log('\n🧪 Hippocampus Temporal Integration Tests\n');
 
   let srv: TestServer | null = null;
 

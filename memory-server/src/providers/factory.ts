@@ -53,18 +53,18 @@ export class ProviderFactory {
   }
 
   static createFromEnv(): { embedder: EmbedderProvider; completion: CompletionProvider } {
-    const embedderProvider = (process.env.NS_EMBEDDER_PROVIDER || 'native') as EmbedderProviderType;
-    const completionProvider = (process.env.NS_COMPLETION_PROVIDER || 'native') as CompletionProviderType;
+    const embedderProvider = (process.env.HC_EMBEDDER_PROVIDER || 'native') as EmbedderProviderType;
+    const completionProvider = (process.env.HC_COMPLETION_PROVIDER || 'native') as CompletionProviderType;
 
     return {
       embedder: ProviderFactory.createEmbedder({
         provider: embedderProvider,
-        model: process.env.NS_EMBEDDER_MODEL,
-        dimensions: process.env.NS_EMBEDDING_DIMENSIONS ? parseInt(process.env.NS_EMBEDDING_DIMENSIONS, 10) : undefined,
+        model: process.env.HC_EMBEDDER_MODEL,
+        dimensions: process.env.HC_EMBEDDING_DIMENSIONS ? parseInt(process.env.HC_EMBEDDING_DIMENSIONS, 10) : undefined,
       }),
       completion: ProviderFactory.createCompletion({
         provider: completionProvider,
-        model: process.env.NS_COMPLETION_MODEL,
+        model: process.env.HC_COMPLETION_MODEL,
       }),
     };
   }

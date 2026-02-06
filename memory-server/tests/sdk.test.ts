@@ -1,11 +1,11 @@
 import { startTestServer, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers';
-import { NeuroStoreClient } from '../../memory-sdk/src/client';
-import { NeuroStoreError } from '../../memory-sdk/src/errors';
+import { HippocampusClient } from '../../memory-sdk/src/client';
+import { HippocampusError } from '../../memory-sdk/src/errors';
 
 const OWNER = 'sdk-test-user';
 
 async function run() {
-  console.log('\n🧪 NeuroStore SDK Integration Tests\n');
+  console.log('\n🧪 Hippocampus SDK Integration Tests\n');
 
   let srv: TestServer | null = null;
 
@@ -14,7 +14,7 @@ async function run() {
     const { baseUrl } = srv;
 
     // Create client pointing at test server (no retries for speed)
-    const client = new NeuroStoreClient({
+    const client = new HippocampusClient({
       baseUrl,
       retries: 0,
     });
@@ -74,8 +74,8 @@ async function run() {
         await client.getEngram('nonexistent-id');
       } catch (err) {
         caught = true;
-        assert(err instanceof NeuroStoreError, 'Error is NeuroStoreError');
-        assertEqual((err as NeuroStoreError).statusCode, 404, 'Not found returns 404');
+        assert(err instanceof HippocampusError, 'Error is HippocampusError');
+        assertEqual((err as HippocampusError).statusCode, 404, 'Not found returns 404');
       }
       assert(caught, 'getEngram with bad id throws');
     }
@@ -259,7 +259,7 @@ async function run() {
         await client.getEngram(engramId);
       } catch (err) {
         caught = true;
-        assertEqual((err as NeuroStoreError).statusCode, 404, 'Deleted engram returns 404');
+        assertEqual((err as HippocampusError).statusCode, 404, 'Deleted engram returns 404');
       }
       assert(caught, 'Deleted engram throws on get');
     }
@@ -274,8 +274,8 @@ async function run() {
         await client.addMemory({ ownerId: '', content: '' } as any);
       } catch (err) {
         caught = true;
-        assert(err instanceof NeuroStoreError, 'Error is NeuroStoreError');
-        assertEqual((err as NeuroStoreError).statusCode, 400, 'Empty content returns 400');
+        assert(err instanceof HippocampusError, 'Error is HippocampusError');
+        assertEqual((err as HippocampusError).statusCode, 400, 'Empty content returns 400');
       }
       assert(caught, 'addMemory with empty content throws');
     }
@@ -286,7 +286,7 @@ async function run() {
         await client.search({ query: 'test' } as any);
       } catch (err) {
         caught = true;
-        assertEqual((err as NeuroStoreError).statusCode, 400, 'Search without ownerId returns 400');
+        assertEqual((err as HippocampusError).statusCode, 400, 'Search without ownerId returns 400');
       }
       assert(caught, 'search without ownerId throws');
     }
@@ -295,8 +295,7 @@ async function run() {
     section('SDK: Client with API Key (no server key set)');
     // ─────────────────────────────────────
     {
-      // Server has no NS_API_KEY set, so any key should work (auth disabled)
-      const keyClient = new NeuroStoreClient({
+      const keyClient = new HippocampusClient({
         baseUrl,
         apiKey: 'test-key-123',
         retries: 0,

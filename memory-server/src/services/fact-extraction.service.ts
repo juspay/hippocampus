@@ -43,7 +43,7 @@ Respond with JSON:
   ]
 }`;
 
-const EXTRACTION_SYSTEM_PROMPT = process.env.NS_EXTRACTION_PROMPT || DEFAULT_EXTRACTION_PROMPT;
+const EXTRACTION_SYSTEM_PROMPT = process.env.HC_EXTRACTION_PROMPT || DEFAULT_EXTRACTION_PROMPT;
 
 export class FactExtractionService {
   constructor(private completion: CompletionProvider) {}

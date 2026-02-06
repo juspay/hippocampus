@@ -3,7 +3,7 @@ import { startTestServer, api, assert, assertEqual, assertExists, section, summa
 const OWNER = 'test-user-1';
 
 async function run() {
-  console.log('\n🧪 NeuroStore API Integration Tests\n');
+  console.log('\n🧪 Hippocampus API Integration Tests\n');
 
   let srv: TestServer | null = null;
 

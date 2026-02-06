@@ -7,8 +7,8 @@ import path from 'path';
 import fs from 'fs';
 
 export function resolveDatabaseConfig(): DatabaseConfig {
-  const pgHost = process.env.NS_PG_HOST;
-  const databaseUrl = process.env.NS_DATABASE_URL;
+  const pgHost = process.env.HC_PG_HOST;
+  const databaseUrl = process.env.HC_DATABASE_URL;
 
   if (pgHost || databaseUrl) {
     if (databaseUrl) {
@@ -30,16 +30,16 @@ export function resolveDatabaseConfig(): DatabaseConfig {
       type: 'postgres',
       postgres: {
         host: pgHost!,
-        port: parseInt(process.env.NS_PG_PORT || '5432', 10),
-        database: process.env.NS_PG_DATABASE || 'neurostore',
-        user: process.env.NS_PG_USER || 'postgres',
-        password: process.env.NS_PG_PASSWORD || '',
-        ssl: process.env.NS_PG_SSL === 'true',
+        port: parseInt(process.env.HC_PG_PORT || '5432', 10),
+        database: process.env.HC_PG_DATABASE || 'hippocampus',
+        user: process.env.HC_PG_USER || 'postgres',
+        password: process.env.HC_PG_PASSWORD || '',
+        ssl: process.env.HC_PG_SSL === 'true',
       },
     };
   }
 
-  const sqlitePath = process.env.NS_SQLITE_PATH || path.join(process.cwd(), 'data', 'neurostore.sqlite');
+  const sqlitePath = process.env.HC_SQLITE_PATH || path.join(process.cwd(), 'data', 'hippocampus.sqlite');
   return { type: 'sqlite', sqlite: { path: sqlitePath } };
 }
 
@@ -60,7 +60,7 @@ export async function createDataStore(config?: DatabaseConfig, embeddingDimensio
     return store;
   }
 
-  const sqlitePath = dbConfig.sqlite?.path || path.join(process.cwd(), 'data', 'neurostore.sqlite');
+  const sqlitePath = dbConfig.sqlite?.path || path.join(process.cwd(), 'data', 'hippocampus.sqlite');
   const dir = path.dirname(sqlitePath);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });

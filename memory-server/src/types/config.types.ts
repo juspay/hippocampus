@@ -35,7 +35,7 @@ export interface DecayConfig {
   strandRates: Record<Strand, number>;
 }
 
-export interface NeuroStoreConfig {
+export interface HippocampusConfig {
   port: number;
   host: string;
   database: DatabaseConfig;

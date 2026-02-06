@@ -4,19 +4,19 @@ import {
   Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery,
   Nexus, NexusCreateInput,
   HealthResponse, StatusResponse,
-  NeuroStoreClientOptions, Strand,
+  HippocampusClientOptions, Strand,
 } from './types';
-import { NeuroStoreError } from './errors';
+import { HippocampusError } from './errors';
 
-export class NeuroStoreClient {
+export class HippocampusClient {
   private baseUrl: string;
   private headers: Record<string, string>;
   private retries: number;
   private retryDelay: number;
 
-  constructor(options: NeuroStoreClientOptions = {}) {
-    const baseUrl = options.baseUrl || process.env.NS_BASE_URL || 'http://localhost:3000';
-    const apiKey = options.apiKey || process.env.NS_API_KEY;
+  constructor(options: HippocampusClientOptions = {}) {
+    const baseUrl = options.baseUrl || process.env.HC_BASE_URL || 'http://localhost:4477';
+    const apiKey = options.apiKey || process.env.HC_API_KEY;
 
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.headers = {
@@ -147,7 +147,7 @@ export class NeuroStoreClient {
         const json = await response.json();
 
         if (!response.ok) {
-          throw NeuroStoreError.fromResponse(response.status, json);
+          throw HippocampusError.fromResponse(response.status, json);
         }
 
         return json as T;
@@ -155,7 +155,7 @@ export class NeuroStoreClient {
         lastError = error instanceof Error ? error : new Error(String(error));
 
         // Don't retry client errors (4xx)
-        if (error instanceof NeuroStoreError && error.statusCode >= 400 && error.statusCode < 500) {
+        if (error instanceof HippocampusError && error.statusCode >= 400 && error.statusCode < 500) {
           throw error;
         }
 

@@ -1,16 +1,22 @@
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-const LEVEL_ORDER: Record<LogLevel, number> = {
-  debug: 0,
-  info: 1,
-  warn: 2,
-  error: 3,
-};
+const ALL_LEVELS: LogLevel[] = ['debug', 'info', 'warn', 'error'];
 
-let currentLevel: LogLevel = (process.env.NS_LOG_LEVEL as LogLevel) || 'info';
+function parseLogLevels(input: string): Set<LogLevel> {
+  const trimmed = input.trim().toLowerCase();
+
+  if (trimmed === 'off' || trimmed === '') {
+    return new Set();
+  }
+
+  const levels = trimmed.split(',').map(s => s.trim()).filter(Boolean);
+  return new Set(levels.filter(l => ALL_LEVELS.includes(l as LogLevel)) as LogLevel[]);
+}
+
+let enabledLevels: Set<LogLevel> = parseLogLevels(process.env.HC_LOG_LEVEL || 'off');
 
 function shouldLog(level: LogLevel): boolean {
-  return LEVEL_ORDER[level] >= LEVEL_ORDER[currentLevel];
+  return enabledLevels.has(level);
 }
 
 function formatMessage(level: LogLevel, message: string, context?: Record<string, unknown>): string {
@@ -23,8 +29,8 @@ function formatMessage(level: LogLevel, message: string, context?: Record<string
 }
 
 export const logger = {
-  setLevel(level: LogLevel) {
-    currentLevel = level;
+  setLevels(levels: LogLevel[] | 'off') {
+    enabledLevels = levels === 'off' ? new Set() : new Set(levels);
   },
 
   debug(message: string, context?: Record<string, unknown>) {

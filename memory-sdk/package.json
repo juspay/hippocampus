@@ -1,9 +1,8 @@
 {
-  "name": "@neurostore/memory-sdk",
+  "name": "@juspay/hippocampus-sdk",
   "version": "0.1.0",
-  "description": "TypeScript client for NeuroStore memory server",
+  "description": "TypeScript client for Hippocampus memory server",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
@@ -18,5 +17,20 @@
   },
   "files": [
     "dist"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juspay/hippocampus.git",
+    "directory": "memory-sdk"
+  },
+  "keywords": [
+    "hippocampus",
+    "memory",
+    "ai",
+    "llm",
+    "semantic-search",
+    "vector-database",
+    "embeddings"
   ]
 }

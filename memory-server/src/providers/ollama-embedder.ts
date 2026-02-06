@@ -8,9 +8,9 @@ export class OllamaEmbedder implements EmbedderProvider {
   readonly name = 'ollama';
 
   constructor(model?: string, dimensions?: number, baseUrl?: string) {
-    this.baseUrl = baseUrl || process.env.NS_OLLAMA_BASE_URL || 'http://localhost:11434';
-    this.model = model || process.env.NS_EMBEDDER_MODEL || 'nomic-embed-text';
-    this.dimensions = dimensions || parseInt(process.env.NS_EMBEDDING_DIMENSIONS || '768', 10);
+    this.baseUrl = baseUrl || process.env.HC_OLLAMA_BASE_URL || 'http://localhost:11434';
+    this.model = model || process.env.HC_EMBEDDER_MODEL || 'nomic-embed-text';
+    this.dimensions = dimensions || parseInt(process.env.HC_EMBEDDING_DIMENSIONS || '768', 10);
   }
 
   async embed(text: string): Promise<number[]> {

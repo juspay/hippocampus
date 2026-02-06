@@ -1,5 +1,5 @@
-export { NeuroStoreClient } from './client';
-export { NeuroStoreError } from './errors';
+export { HippocampusClient } from './client';
+export { HippocampusError } from './errors';
 export type {
   Engram,
   EngramCreateInput,
@@ -18,5 +18,5 @@ export type {
   Strand,
   HealthResponse,
   StatusResponse,
-  NeuroStoreClientOptions,
+  HippocampusClientOptions,
 } from './types';

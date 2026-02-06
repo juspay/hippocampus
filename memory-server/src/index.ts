@@ -17,8 +17,8 @@ import { authGuard } from './api/middleware/auth';
 import { logger } from './utils/logger';
 
 async function bootstrap(): Promise<void> {
-  const port = parseInt(process.env.NS_PORT || '3000', 10);
-  const host = process.env.NS_HOST || '0.0.0.0';
+  const port = parseInt(process.env.HC_PORT || '4477', 10);
+  const host = process.env.HC_HOST || '0.0.0.0';
 
   // 1. Create providers
   logger.info('Creating AI providers...');
@@ -59,7 +59,7 @@ async function bootstrap(): Promise<void> {
 
   // 6. Start server
   app.listen(port, host, () => {
-    logger.info(`NeuroStore server running on ${host}:${port}`);
+    logger.info(`Hippocampus server running on ${host}:${port}`);
   });
 }
 

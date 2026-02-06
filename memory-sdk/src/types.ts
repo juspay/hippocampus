@@ -167,10 +167,10 @@ export interface StatusResponse {
   memory: Record<string, number>;
 }
 
-export interface NeuroStoreClientOptions {
-  /** Server URL. Falls back to NS_BASE_URL env var, then http://localhost:3000 */
+export interface HippocampusClientOptions {
+  /** Server URL. Falls back to HC_BASE_URL env var, then http://localhost:4477 */
   baseUrl?: string;
-  /** API key. Falls back to NS_API_KEY env var */
+  /** API key. Falls back to HC_API_KEY env var */
   apiKey?: string;
   headers?: Record<string, string>;
   retries?: number;

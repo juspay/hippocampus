@@ -7,8 +7,8 @@ export class OpenAICompletion implements CompletionProvider {
   private model: string;
 
   constructor(apiKey?: string, model?: string) {
-    this.client = new OpenAI({ apiKey: apiKey || process.env.NS_OPENAI_API_KEY });
-    this.model = model || process.env.NS_COMPLETION_MODEL || 'gpt-4-turbo';
+    this.client = new OpenAI({ apiKey: apiKey || process.env.HC_OPENAI_API_KEY });
+    this.model = model || process.env.HC_COMPLETION_MODEL || 'gpt-4-turbo';
   }
 
   async complete(systemPrompt: string, userPrompt: string): Promise<string> {

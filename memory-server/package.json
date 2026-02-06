@@ -1,5 +1,5 @@
 {
-  "name": "@neurostore/memory-server",
+  "name": "@juspay/hippocampus-server",
   "version": "0.1.0",
   "description": "Self-hosted backend memory engine",
   "main": "dist/index.js",
