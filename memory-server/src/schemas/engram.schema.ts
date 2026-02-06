@@ -29,6 +29,7 @@ export const SearchEngramSchema = z.object({
   tags: z.array(z.string()).optional(),
   minSignal: z.number().min(0).max(1).optional(),
   minScore: z.number().min(0).max(1).optional().default(0),
+  minFinalScore: z.number().min(0).max(1).optional().default(0.35),  // Filter low-quality results
   expandSynapses: z.boolean().optional().default(true),
 });
 

@@ -159,4 +159,11 @@ export class MemoryService {
   async healthCheck(): Promise<{ ok: boolean; type: string }> {
     return this.store.healthCheck();
   }
+
+  getProviderInfo(): { embedder: string; embeddingDimensions: number } {
+    return {
+      embedder: this.embedder.name,
+      embeddingDimensions: this.embedder.dimensions,
+    };
+  }
 }

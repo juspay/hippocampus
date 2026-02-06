@@ -11,6 +11,13 @@ A self-hosted memory engine for AI agents and applications. Store, search, and r
 - **Pluggable Embeddings** — Native (zero deps), OpenAI, or Ollama
 - **Dual Database Support** — PostgreSQL + pgvector for production, SQLite for development
 
+## Packages
+
+| Package | Description |
+|---------|-------------|
+| [memory-server](./memory-server) | Self-hosted backend memory engine (Express + TypeScript) |
+| [memory-sdk](./memory-sdk) | TypeScript client SDK (zero runtime deps) |
+
 ## Quick Start
 
 ### Prerequisites
@@ -37,7 +44,6 @@ Server starts at `http://localhost:3000`. Data stored in `./data/neurostore.sqli
 ### Run with PostgreSQL + pgvector
 
 ```bash
-# Set environment variables
 export NS_PG_HOST=localhost
 export NS_PG_PORT=5432
 export NS_PG_USER=postgres
@@ -126,11 +132,36 @@ curl "http://localhost:3000/api/chronicles/current?ownerId=user-123&entity=user-
 curl "http://localhost:3000/api/chronicles/timeline?ownerId=user-123&entity=user-123"
 ```
 
+### Using the SDK
+
+```typescript
+import { NeuroStoreClient } from '@neurostore/sdk';
+
+const client = new NeuroStoreClient({
+  baseUrl: 'http://localhost:3000',
+  apiKey: 'your-api-key'  // optional
+});
+
+// Store memory
+await client.addMemory({
+  ownerId: 'user-123',
+  content: 'TypeScript is a typed superset of JavaScript'
+});
+
+// Search
+const results = await client.search({
+  ownerId: 'user-123',
+  query: 'programming languages',
+  limit: 10
+});
+```
+
 ## Configuration
 
-Copy `.env.example` to `.env` and configure:
+Copy `.env.example` to `.env` in the memory-server directory:
 
 ```bash
+cd memory-server
 cp .env.example .env
 ```
 
@@ -204,6 +235,8 @@ The native embedder is suitable for development and testing. Use OpenAI or Ollam
 
 ## Data Model
 
+NeuroStore uses four core data structures:
+
 ### Engrams
 
 Core memory units with semantic embeddings, importance signals, and decay rates.
@@ -246,7 +279,7 @@ Weighted associations between engrams for associative recall.
 
 Relationships between chronicles (superseded_by, caused_by, related_to).
 
-See [docs/database-schema.md](docs/database-schema.md) for complete schema documentation.
+See [memory-server/docs/database-schema.md](./memory-server/docs/database-schema.md) for complete schema documentation.
 
 ## Search Algorithm
 
@@ -270,6 +303,8 @@ finalScore = (0.30 × vectorScore)      // semantic similarity
 ## Testing
 
 ```bash
+cd memory-server
+
 # Run all tests
 npm test
 
@@ -282,6 +317,8 @@ npm run test:sdk      # SDK integration tests
 ## Docker
 
 ```bash
+cd memory-server
+
 # Build
 docker build -t neurostore .
 
@@ -297,65 +334,32 @@ docker run -p 3000:3000 \
   neurostore
 ```
 
-## SDK
-
-A TypeScript SDK is available at `../memory-sdk`:
-
-```typescript
-import { NeuroStoreClient } from '@neurostore/sdk';
-
-const client = new NeuroStoreClient({
-  baseUrl: 'http://localhost:3000',
-  apiKey: 'your-api-key'  // optional
-});
-
-// Store memory
-await client.addMemory({
-  ownerId: 'user-123',
-  content: 'TypeScript is a typed superset of JavaScript'
-});
-
-// Search
-const results = await client.search({
-  ownerId: 'user-123',
-  query: 'programming languages',
-  limit: 10
-});
-```
-
 ## Project Structure
 
 ```
-memory-server/
-├── src/
-│   ├── api/
-│   │   ├── controllers/    # Request handlers
-│   │   ├── middleware/     # Auth, validation, errors
-│   │   └── routes/         # Route definitions
-│   ├── db/
-│   │   ├── postgres.store.ts
-│   │   ├── sqlite.store.ts
-│   │   └── resolve.ts      # Auto-detect database
-│   ├── providers/
-│   │   ├── native-embedder.ts
-│   │   ├── openai-embedder.ts
-│   │   └── ollama-embedder.ts
-│   ├── retrieval/
-│   │   ├── bm25.ts         # Keyword scoring
-│   │   └── pipeline.ts     # Search orchestration
-│   ├── services/
-│   │   ├── memory.service.ts
-│   │   ├── temporal.service.ts
-│   │   ├── decay.service.ts
-│   │   └── association.service.ts
-│   ├── schemas/            # Zod validation
-│   ├── types/              # TypeScript interfaces
-│   ├── utils/              # Helpers
-│   └── index.ts            # Entry point
-├── tests/
-├── docs/
-├── scripts/
-└── package.json
+neurostore/
+├── memory-server/           # Backend server
+│   ├── src/
+│   │   ├── api/             # Controllers, middleware, routes
+│   │   ├── db/              # Postgres + SQLite stores
+│   │   ├── providers/       # Embedding providers
+│   │   ├── retrieval/       # Search pipeline, BM25
+│   │   ├── services/        # Business logic
+│   │   ├── schemas/         # Zod validation
+│   │   ├── types/           # TypeScript interfaces
+│   │   └── utils/           # Helpers
+│   ├── tests/
+│   ├── docs/
+│   └── package.json
+│
+├── memory-sdk/              # TypeScript client SDK
+│   ├── src/
+│   │   ├── client.ts        # NeuroStoreClient
+│   │   ├── types.ts         # Request/response types
+│   │   └── errors.ts        # NeuroStoreError
+│   └── package.json
+│
+└── README.md
 ```
 
 ## License

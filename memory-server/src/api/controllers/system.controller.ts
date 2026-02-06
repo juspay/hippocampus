@@ -25,8 +25,13 @@ export class SystemController {
     try {
       const stats = await this.memoryService.getStats();
       const dbHealth = await this.memoryService.healthCheck();
+      const providerInfo = this.memoryService.getProviderInfo();
       res.json({
-        database: dbHealth.type,
+        providers: {
+          database: dbHealth.type,
+          embedder: providerInfo.embedder,
+          embeddingDimensions: providerInfo.embeddingDimensions,
+        },
         stats,
         uptime: process.uptime(),
         memory: process.memoryUsage(),

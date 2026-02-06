@@ -9,6 +9,7 @@ import { logger } from '../utils/logger';
  */
 export class NativeEmbedder implements EmbedderProvider {
   readonly dimensions: number;
+  readonly name = 'native';
 
   constructor(dimensions = 384) {
     this.dimensions = dimensions;

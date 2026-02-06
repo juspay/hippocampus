@@ -5,9 +5,9 @@ export class OllamaCompletion implements CompletionProvider {
   private baseUrl: string;
   private model: string;
 
-  constructor(model = 'llama3', baseUrl?: string) {
+  constructor(model?: string, baseUrl?: string) {
     this.baseUrl = baseUrl || process.env.NS_OLLAMA_BASE_URL || 'http://localhost:11434';
-    this.model = model;
+    this.model = model || process.env.NS_COMPLETION_MODEL || 'llama3';
   }
 
   async complete(systemPrompt: string, userPrompt: string): Promise<string> {

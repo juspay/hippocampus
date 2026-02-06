@@ -6,11 +6,12 @@ export class OpenAIEmbedder implements EmbedderProvider {
   private client: OpenAI;
   private model: string;
   readonly dimensions: number;
+  readonly name = 'openai';
 
-  constructor(apiKey?: string, model = 'text-embedding-3-small', dimensions = 1536) {
+  constructor(apiKey?: string, model?: string, dimensions?: number) {
     this.client = new OpenAI({ apiKey: apiKey || process.env.NS_OPENAI_API_KEY });
-    this.model = model;
-    this.dimensions = dimensions;
+    this.model = model || process.env.NS_EMBEDDER_MODEL || 'text-embedding-3-small';
+    this.dimensions = dimensions || parseInt(process.env.NS_EMBEDDING_DIMENSIONS || '1536', 10);
   }
 
   async embed(text: string): Promise<number[]> {

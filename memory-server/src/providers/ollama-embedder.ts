@@ -5,11 +5,12 @@ export class OllamaEmbedder implements EmbedderProvider {
   private baseUrl: string;
   private model: string;
   readonly dimensions: number;
+  readonly name = 'ollama';
 
-  constructor(model = 'nomic-embed-text', dimensions = 768, baseUrl?: string) {
+  constructor(model?: string, dimensions?: number, baseUrl?: string) {
     this.baseUrl = baseUrl || process.env.NS_OLLAMA_BASE_URL || 'http://localhost:11434';
-    this.model = model;
-    this.dimensions = dimensions;
+    this.model = model || process.env.NS_EMBEDDER_MODEL || 'nomic-embed-text';
+    this.dimensions = dimensions || parseInt(process.env.NS_EMBEDDING_DIMENSIONS || '768', 10);
   }
 
   async embed(text: string): Promise<number[]> {

@@ -168,9 +168,13 @@ export class RetrievalPipeline {
       };
     });
 
-    // Step 9: Sort and trim
+    // Step 9: Sort, filter by minFinalScore, and trim
     scored.sort((a, b) => b.trace.finalScore - a.trace.finalScore);
-    const topHits = scored.slice(0, limit);
+    const minFinalScore = query.minFinalScore ?? 0.35;
+    const filteredByFinalScore = minFinalScore > 0
+      ? scored.filter(s => s.trace.finalScore >= minFinalScore)
+      : scored;
+    const topHits = filteredByFinalScore.slice(0, limit);
 
     // Step 10: Post-retrieval reinforcement (fire and forget)
     this.reinforceAccessed(topHits.map(h => h.engram.id)).catch(err =>

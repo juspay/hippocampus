@@ -10,6 +10,7 @@ export interface SearchQuery {
   tags?: string[];
   minSignal?: number;
   minScore?: number;
+  minFinalScore?: number;
   expandSynapses?: boolean;
 }
 
