@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { STRANDS } from '../types/engram.types';
+import { STRANDS } from '../types/engram.types.js';
 
 export const CreateEngramSchema = z.object({
   ownerId: z.string().min(1),

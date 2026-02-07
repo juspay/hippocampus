@@ -1,6 +1,6 @@
-import { startTestServer, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers';
-import { HippocampusClient } from '../../memory-sdk/src/client';
-import { HippocampusError } from '../../memory-sdk/src/errors';
+import { startTestServer, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers.js';
+import { HippocampusClient } from '../../memory-sdk/src/client.js';
+import { HippocampusError } from '../../memory-sdk/src/errors.js';
 
 const OWNER = 'sdk-test-user';
 

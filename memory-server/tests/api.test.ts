@@ -1,4 +1,4 @@
-import { startTestServer, api, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers';
+import { startTestServer, api, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers.js';
 
 const OWNER = 'test-user-1';
 

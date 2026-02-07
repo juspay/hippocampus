@@ -1,5 +1,5 @@
-import { startTestServer, api, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers';
-import { CompletionProvider } from '../src/types/provider.types';
+import { startTestServer, api, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers.js';
+import { CompletionProvider } from '../src/types/provider.types.js';
 
 const OWNER = 'temporal-test-user';
 

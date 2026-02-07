@@ -1,2 +1,2 @@
-export * from './engram.schema';
-export * from './chronicle.schema';
+export * from './engram.schema.js';
+export * from './chronicle.schema.js';

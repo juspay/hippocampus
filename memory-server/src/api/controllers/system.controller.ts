@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { MemoryService } from '../../services/memory.service';
-import { DecayService } from '../../services/decay.service';
+import { MemoryService } from '../../services/memory.service.js';
+import { DecayService } from '../../services/decay.service.js';
 
 export class SystemController {
   constructor(

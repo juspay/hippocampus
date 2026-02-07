@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { ChronicleController } from '../controllers/chronicle.controller';
-import { validate } from '../middleware/validate';
-import { CreateChronicleSchema, UpdateChronicleSchema, QueryChronicleSchema, CreateNexusSchema } from '../../schemas/chronicle.schema';
+import { ChronicleController } from '../controllers/chronicle.controller.js';
+import { validate } from '../middleware/validate.js';
+import { CreateChronicleSchema, UpdateChronicleSchema, QueryChronicleSchema, CreateNexusSchema } from '../../schemas/chronicle.schema.js';
 
 export function createChronicleRoutes(controller: ChronicleController): Router {
   const router = Router();

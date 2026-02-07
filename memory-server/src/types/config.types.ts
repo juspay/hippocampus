@@ -1,4 +1,4 @@
-import { Strand } from './engram.types';
+import { Strand } from './engram.types.js';
 
 export interface DatabaseConfig {
   type: 'postgres' | 'sqlite';

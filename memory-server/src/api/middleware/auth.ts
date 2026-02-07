@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { createApiError } from './error-handler';
-import { logger } from '../../utils/logger';
+import { createApiError } from './error-handler.js';
+import { logger } from '../../utils/logger.js';
 
 const HC_API_KEY = process.env.HC_API_KEY;
 

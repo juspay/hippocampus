@@ -2,15 +2,16 @@
   "name": "@juspay/hippocampus-server",
   "version": "0.1.0",
   "description": "Self-hosted backend memory engine",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node src/index.ts",
+    "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
-    "test": "ts-node --project tests/tsconfig.json tests/api.test.ts && ts-node --project tests/tsconfig.json tests/temporal.test.ts && ts-node --project tests/tsconfig.json tests/sdk.test.ts",
-    "test:api": "ts-node --project tests/tsconfig.json tests/api.test.ts",
-    "test:temporal": "ts-node --project tests/tsconfig.json tests/temporal.test.ts",
-    "test:sdk": "ts-node --project tests/tsconfig.json tests/sdk.test.ts"
+    "test": "tsx tests/api.test.ts && tsx tests/temporal.test.ts && tsx tests/sdk.test.ts",
+    "test:api": "tsx tests/api.test.ts",
+    "test:temporal": "tsx tests/temporal.test.ts",
+    "test:sdk": "tsx tests/sdk.test.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -29,7 +30,7 @@
     "@types/node": "^22.7.0",
     "@types/pg": "^8.11.10",
     "@types/uuid": "^10.0.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }
 }

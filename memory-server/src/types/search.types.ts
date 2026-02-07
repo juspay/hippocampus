@@ -1,5 +1,5 @@
-import { Strand } from './engram.types';
-import { Chronicle } from './chronicle.types';
+import { Strand } from './engram.types.js';
+import { Chronicle } from './chronicle.types.js';
 
 export interface SearchQuery {
   ownerId: string;

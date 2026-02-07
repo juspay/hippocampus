@@ -1,10 +1,10 @@
 import { Pool, PoolConfig } from 'pg';
-import { DataStore } from '../types/db.types';
-import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from '../types/engram.types';
-import { Synapse, SynapseCreateInput } from '../types/synapse.types';
-import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from '../types/chronicle.types';
-import { generateId } from '../utils/crypto';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from '../types/engram.types.js';
+import { Synapse, SynapseCreateInput } from '../types/synapse.types.js';
+import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from '../types/chronicle.types.js';
+import { generateId } from '../utils/crypto.js';
+import { logger } from '../utils/logger.js';
 
 export class PostgresStore implements DataStore {
   private pool: Pool;

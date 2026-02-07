@@ -1,9 +1,9 @@
-import { DataStore } from '../types/db.types';
-import { EmbedderProvider } from '../types/provider.types';
-import { Engram } from '../types/engram.types';
-import { sha256 } from '../utils/crypto';
-import { cosineSimilarity } from '../utils/math';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { EmbedderProvider } from '../types/provider.types.js';
+import { Engram } from '../types/engram.types.js';
+import { sha256 } from '../utils/crypto.js';
+import { cosineSimilarity } from '../utils/math.js';
+import { logger } from '../utils/logger.js';
 
 export class DeduplicationService {
   private threshold: number;

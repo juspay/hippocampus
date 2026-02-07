@@ -3,18 +3,18 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
-import { createDataStore } from './db';
-import { ProviderFactory } from './providers';
-import { MemoryService } from './services/memory.service';
-import { TemporalService } from './services/temporal.service';
-import { DecayService } from './services/decay.service';
-import { EngramController } from './api/controllers/engram.controller';
-import { ChronicleController } from './api/controllers/chronicle.controller';
-import { SystemController } from './api/controllers/system.controller';
-import { mountRoutes } from './api/routes';
-import { errorHandler, notFound } from './api/middleware/error-handler';
-import { authGuard } from './api/middleware/auth';
-import { logger } from './utils/logger';
+import { createDataStore } from './db/index.js';
+import { ProviderFactory } from './providers/index.js';
+import { MemoryService } from './services/memory.service.js';
+import { TemporalService } from './services/temporal.service.js';
+import { DecayService } from './services/decay.service.js';
+import { EngramController } from './api/controllers/engram.controller.js';
+import { ChronicleController } from './api/controllers/chronicle.controller.js';
+import { SystemController } from './api/controllers/system.controller.js';
+import { mountRoutes } from './api/routes/index.js';
+import { errorHandler, notFound } from './api/middleware/error-handler.js';
+import { authGuard } from './api/middleware/auth.js';
+import { logger } from './utils/logger.js';
 
 async function bootstrap(): Promise<void> {
   const port = parseInt(process.env.HC_PORT || '4477', 10);

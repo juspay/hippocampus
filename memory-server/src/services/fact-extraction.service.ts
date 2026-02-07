@@ -1,6 +1,6 @@
-import { CompletionProvider } from '../types/provider.types';
-import { Strand, STRANDS } from '../types/engram.types';
-import { logger } from '../utils/logger';
+import { CompletionProvider } from '../types/provider.types.js';
+import { Strand, STRANDS } from '../types/engram.types.js';
+import { logger } from '../utils/logger.js';
 
 export interface TemporalFact {
   entity: string;

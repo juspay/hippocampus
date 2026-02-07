@@ -1,6 +1,6 @@
-import { DataStore } from '../types/db.types';
-import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from '../types/chronicle.types';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from '../types/chronicle.types.js';
+import { logger } from '../utils/logger.js';
 
 export class TemporalService {
   constructor(private store: DataStore) {}

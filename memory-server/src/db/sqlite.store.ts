@@ -1,11 +1,11 @@
 import Database from 'better-sqlite3';
-import { DataStore } from '../types/db.types';
-import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from '../types/engram.types';
-import { Synapse, SynapseCreateInput } from '../types/synapse.types';
-import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from '../types/chronicle.types';
-import { generateId } from '../utils/crypto';
-import { cosineSimilarity } from '../utils/math';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from '../types/engram.types.js';
+import { Synapse, SynapseCreateInput } from '../types/synapse.types.js';
+import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from '../types/chronicle.types.js';
+import { generateId } from '../utils/crypto.js';
+import { cosineSimilarity } from '../utils/math.js';
+import { logger } from '../utils/logger.js';
 
 export class SqliteStore implements DataStore {
   private db: Database.Database;

@@ -1,6 +1,6 @@
-import { DataStore } from '../types/db.types';
-import { Strand, STRANDS } from '../types/engram.types';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { Strand, STRANDS } from '../types/engram.types.js';
+import { logger } from '../utils/logger.js';
 
 export interface DecayOptions {
   minSignal: number;

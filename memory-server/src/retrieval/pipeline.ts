@@ -1,13 +1,13 @@
-import { DataStore } from '../types/db.types';
-import { EmbedderProvider } from '../types/provider.types';
-import { SearchQuery, SearchResult, SearchHit, RetrievalTrace, ChronicleHit } from '../types/search.types';
-import { SynapseExpansion } from '../types/synapse.types';
-import { Chronicle } from '../types/chronicle.types';
-import { Engram, Strand } from '../types/engram.types';
-import { BM25Scorer } from './bm25';
-import { minMaxNormalize, clamp } from '../utils/math';
-import { tokenize } from '../utils/text';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { EmbedderProvider } from '../types/provider.types.js';
+import { SearchQuery, SearchResult, SearchHit, RetrievalTrace, ChronicleHit } from '../types/search.types.js';
+import { SynapseExpansion } from '../types/synapse.types.js';
+import { Chronicle } from '../types/chronicle.types.js';
+import { Engram, Strand } from '../types/engram.types.js';
+import { BM25Scorer } from './bm25.js';
+import { minMaxNormalize, clamp } from '../utils/math.js';
+import { tokenize } from '../utils/text.js';
+import { logger } from '../utils/logger.js';
 
 interface PipelineConfig {
   vectorWeight: number;

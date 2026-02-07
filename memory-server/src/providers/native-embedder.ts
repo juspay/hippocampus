@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
-import { EmbedderProvider } from '../types/provider.types';
-import { logger } from '../utils/logger';
+import { EmbedderProvider } from '../types/provider.types.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * Native hash-based embedder — zero external dependencies.

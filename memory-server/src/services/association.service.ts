@@ -1,6 +1,6 @@
-import { DataStore } from '../types/db.types';
-import { Synapse, SynapseExpansion } from '../types/synapse.types';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { Synapse, SynapseExpansion } from '../types/synapse.types.js';
+import { logger } from '../utils/logger.js';
 
 export class AssociationService {
   constructor(private store: DataStore) {}

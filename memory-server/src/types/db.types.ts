@@ -1,6 +1,6 @@
-import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from './engram.types';
-import { Synapse, SynapseCreateInput } from './synapse.types';
-import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from './chronicle.types';
+import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from './engram.types.js';
+import { Synapse, SynapseCreateInput } from './synapse.types.js';
+import { Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery, Nexus, NexusCreateInput } from './chronicle.types.js';
 
 export interface DataStore {
   // Lifecycle

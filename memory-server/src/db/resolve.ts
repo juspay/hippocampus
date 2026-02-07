@@ -1,8 +1,8 @@
-import { DataStore } from '../types/db.types';
-import { DatabaseConfig } from '../types/config.types';
-import { PostgresStore } from './postgres.store';
-import { SqliteStore } from './sqlite.store';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { DatabaseConfig } from '../types/config.types.js';
+import { PostgresStore } from './postgres.store.js';
+import { SqliteStore } from './sqlite.store.js';
+import { logger } from '../utils/logger.js';
 import path from 'path';
 import fs from 'fs';
 

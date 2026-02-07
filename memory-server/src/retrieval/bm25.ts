@@ -1,4 +1,4 @@
-import { tokenize, computeTermFrequencies } from '../utils/text';
+import { tokenize, computeTermFrequencies } from '../utils/text.js';
 
 export interface BM25Document {
   id: string;

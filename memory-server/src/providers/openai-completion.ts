@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
-import { CompletionProvider } from '../types/provider.types';
-import { logger } from '../utils/logger';
+import { CompletionProvider } from '../types/provider.types.js';
+import { logger } from '../utils/logger.js';
 
 export class OpenAICompletion implements CompletionProvider {
   private client: OpenAI;

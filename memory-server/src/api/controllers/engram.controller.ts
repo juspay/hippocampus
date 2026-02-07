@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { MemoryService } from '../../services/memory.service';
-import { Engram } from '../../types/engram.types';
-import { createApiError } from '../middleware/error-handler';
+import { MemoryService } from '../../services/memory.service.js';
+import { Engram } from '../../types/engram.types.js';
+import { createApiError } from '../middleware/error-handler.js';
 
 /** Strip embedding vector from API responses — it's internal data, not useful to clients. */
 function withoutEmbedding(engram: Engram): Omit<Engram, 'embedding'> {

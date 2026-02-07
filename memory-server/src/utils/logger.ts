@@ -13,10 +13,17 @@ function parseLogLevels(input: string): Set<LogLevel> {
   return new Set(levels.filter(l => ALL_LEVELS.includes(l as LogLevel)) as LogLevel[]);
 }
 
-let enabledLevels: Set<LogLevel> = parseLogLevels(process.env.HC_LOG_LEVEL || 'off');
+let enabledLevels: Set<LogLevel> | null = null;
+
+function getEnabledLevels(): Set<LogLevel> {
+  if (enabledLevels === null) {
+    enabledLevels = parseLogLevels(process.env.HC_LOG_LEVEL || 'off');
+  }
+  return enabledLevels;
+}
 
 function shouldLog(level: LogLevel): boolean {
-  return enabledLevels.has(level);
+  return getEnabledLevels().has(level);
 }
 
 function formatMessage(level: LogLevel, message: string, context?: Record<string, unknown>): string {
@@ -30,7 +37,7 @@ function formatMessage(level: LogLevel, message: string, context?: Record<string
 
 export const logger = {
   setLevels(levels: LogLevel[] | 'off') {
-    enabledLevels = levels === 'off' ? new Set() : new Set(levels);
+    enabledLevels = levels === 'off' ? new Set<LogLevel>() : new Set(levels);
   },
 
   debug(message: string, context?: Record<string, unknown>) {

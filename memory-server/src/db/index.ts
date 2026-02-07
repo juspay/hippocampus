@@ -1,3 +1,3 @@
-export { PostgresStore } from './postgres.store';
-export { SqliteStore } from './sqlite.store';
-export { resolveDatabaseConfig, createDataStore } from './resolve';
+export { PostgresStore } from './postgres.store.js';
+export { SqliteStore } from './sqlite.store.js';
+export { resolveDatabaseConfig, createDataStore } from './resolve.js';

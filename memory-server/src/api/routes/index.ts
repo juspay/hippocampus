@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { createEngramRoutes } from './engram.routes';
-import { createChronicleRoutes, createNexusRoutes } from './chronicle.routes';
-import { createSystemRoutes } from './system.routes';
-import { EngramController } from '../controllers/engram.controller';
-import { ChronicleController } from '../controllers/chronicle.controller';
-import { SystemController } from '../controllers/system.controller';
+import { createEngramRoutes } from './engram.routes.js';
+import { createChronicleRoutes, createNexusRoutes } from './chronicle.routes.js';
+import { createSystemRoutes } from './system.routes.js';
+import { EngramController } from '../controllers/engram.controller.js';
+import { ChronicleController } from '../controllers/chronicle.controller.js';
+import { SystemController } from '../controllers/system.controller.js';
 
 export interface RouteControllers {
   engram: EngramController;

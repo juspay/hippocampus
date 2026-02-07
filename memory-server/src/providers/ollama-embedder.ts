@@ -1,5 +1,5 @@
-import { EmbedderProvider } from '../types/provider.types';
-import { logger } from '../utils/logger';
+import { EmbedderProvider } from '../types/provider.types.js';
+import { logger } from '../utils/logger.js';
 
 export class OllamaEmbedder implements EmbedderProvider {
   private baseUrl: string;

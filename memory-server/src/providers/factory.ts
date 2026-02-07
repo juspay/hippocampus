@@ -1,10 +1,10 @@
-import { EmbedderProvider, CompletionProvider } from '../types/provider.types';
-import { OpenAIEmbedder } from './openai-embedder';
-import { OllamaEmbedder } from './ollama-embedder';
-import { NativeEmbedder } from './native-embedder';
-import { OpenAICompletion } from './openai-completion';
-import { OllamaCompletion } from './ollama-completion';
-import { NativeCompletion } from './native-completion';
+import { EmbedderProvider, CompletionProvider } from '../types/provider.types.js';
+import { OpenAIEmbedder } from './openai-embedder.js';
+import { OllamaEmbedder } from './ollama-embedder.js';
+import { NativeEmbedder } from './native-embedder.js';
+import { OpenAICompletion } from './openai-completion.js';
+import { OllamaCompletion } from './ollama-completion.js';
+import { NativeCompletion } from './native-completion.js';
 
 export type EmbedderProviderType = 'openai' | 'ollama' | 'native';
 export type CompletionProviderType = 'openai' | 'ollama' | 'native';

@@ -1,14 +1,14 @@
-import { DataStore } from '../types/db.types';
-import { EmbedderProvider, CompletionProvider } from '../types/provider.types';
-import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from '../types/engram.types';
-import { SearchQuery, SearchResult } from '../types/search.types';
-import { FactExtractionService } from './fact-extraction.service';
-import { DeduplicationService } from './deduplication.service';
-import { AssociationService } from './association.service';
-import { DecayService } from './decay.service';
-import { TemporalService } from './temporal.service';
-import { RetrievalPipeline } from '../retrieval/pipeline';
-import { logger } from '../utils/logger';
+import { DataStore } from '../types/db.types.js';
+import { EmbedderProvider, CompletionProvider } from '../types/provider.types.js';
+import { Engram, EngramCreateInput, EngramUpdateInput, Strand } from '../types/engram.types.js';
+import { SearchQuery, SearchResult } from '../types/search.types.js';
+import { FactExtractionService } from './fact-extraction.service.js';
+import { DeduplicationService } from './deduplication.service.js';
+import { AssociationService } from './association.service.js';
+import { DecayService } from './decay.service.js';
+import { TemporalService } from './temporal.service.js';
+import { RetrievalPipeline } from '../retrieval/pipeline.js';
+import { logger } from '../utils/logger.js';
 
 export class MemoryService {
   private factExtraction: FactExtractionService;

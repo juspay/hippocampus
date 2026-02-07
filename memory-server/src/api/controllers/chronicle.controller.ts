@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { TemporalService } from '../../services/temporal.service';
-import { createApiError } from '../middleware/error-handler';
+import { TemporalService } from '../../services/temporal.service.js';
+import { createApiError } from '../middleware/error-handler.js';
 
 export class ChronicleController {
   constructor(private temporalService: TemporalService) {}

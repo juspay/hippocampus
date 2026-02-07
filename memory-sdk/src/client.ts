@@ -5,8 +5,8 @@ import {
   Nexus, NexusCreateInput,
   HealthResponse, StatusResponse,
   HippocampusClientOptions, Strand,
-} from './types';
-import { HippocampusError } from './errors';
+} from './types.js';
+import { HippocampusError } from './errors.js';
 
 export class HippocampusClient {
   private baseUrl: string;

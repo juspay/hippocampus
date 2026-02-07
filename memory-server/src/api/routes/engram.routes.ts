@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { EngramController } from '../controllers/engram.controller';
-import { validate } from '../middleware/validate';
-import { CreateEngramSchema, SearchEngramSchema, UpdateEngramSchema, ListEngramsSchema, ReinforceEngramSchema } from '../../schemas/engram.schema';
+import { EngramController } from '../controllers/engram.controller.js';
+import { validate } from '../middleware/validate.js';
+import { CreateEngramSchema, SearchEngramSchema, UpdateEngramSchema, ListEngramsSchema, ReinforceEngramSchema } from '../../schemas/engram.schema.js';
 
 export function createEngramRoutes(controller: EngramController): Router {
   const router = Router();

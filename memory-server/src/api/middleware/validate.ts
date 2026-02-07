@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema, ZodError } from 'zod';
-import { createApiError } from './error-handler';
+import { createApiError } from './error-handler.js';
 
 export function validate(schema: ZodSchema, source: 'body' | 'query' | 'params' = 'body') {
   return (req: Request, _res: Response, next: NextFunction): void => {
