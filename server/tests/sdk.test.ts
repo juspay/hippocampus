@@ -1,6 +1,6 @@
 import { startTestServer, assert, assertEqual, assertExists, section, summary, TestServer } from './helpers.js';
-import { HippocampusClient } from '../../memory-sdk/src/client.js';
-import { HippocampusError } from '../../memory-sdk/src/errors.js';
+import { Hippocampus } from '../../sdk/src/client.js';
+import { HippocampusError } from '../../sdk/src/errors.js';
 
 const OWNER = 'sdk-test-user';
 
@@ -14,7 +14,7 @@ async function run() {
     const { baseUrl } = srv;
 
     // Create client pointing at test server (no retries for speed)
-    const client = new HippocampusClient({
+    const client = new Hippocampus({
       baseUrl,
       retries: 0,
     });
@@ -295,7 +295,7 @@ async function run() {
     section('SDK: Client with API Key (no server key set)');
     // ─────────────────────────────────────
     {
-      const keyClient = new HippocampusClient({
+      const keyClient = new Hippocampus({
         baseUrl,
         apiKey: 'test-key-123',
         retries: 0,

@@ -15,8 +15,8 @@ A self-hosted memory engine for AI agents and applications. Store, search, and r
 
 | Package | Description |
 |---------|-------------|
-| [memory-server](./memory-server) | Self-hosted backend memory engine (Express + TypeScript) |
-| [memory-sdk](./memory-sdk) | TypeScript client SDK (zero runtime deps) |
+| [server](./server) | Self-hosted backend memory engine (Express + TypeScript) |
+| [sdk](./sdk) | TypeScript client SDK (zero runtime deps) — `@juspay/hippocampus` on npm |
 
 ## Quick Start
 
@@ -25,11 +25,11 @@ A self-hosted memory engine for AI agents and applications. Store, search, and r
 - Node.js 18+
 - PostgreSQL 14+ with pgvector (production) or SQLite (development)
 
-### Installation
+### Server Installation
 
 ```bash
 git clone https://github.com/juspay/hippocampus.git
-cd hippocampus/memory-server
+cd hippocampus/server
 npm install
 ```
 
@@ -60,7 +60,81 @@ curl http://localhost:4477/api/health
 # {"status":"ok","database":"sqlite","timestamp":"..."}
 ```
 
-## Usage
+## SDK Installation
+
+```bash
+npm install @juspay/hippocampus
+```
+
+### Usage
+
+```typescript
+import { Hippocampus } from '@juspay/hippocampus';
+
+const hippocampus = new Hippocampus({
+  baseUrl: 'http://localhost:4477',
+  apiKey: 'your-api-key'  // optional
+});
+
+// Store memory
+await hippocampus.addMemory({
+  ownerId: 'user-123',
+  content: 'TypeScript is a typed superset of JavaScript'
+});
+
+// Search
+const results = await hippocampus.search({
+  ownerId: 'user-123',
+  query: 'programming languages',
+  limit: 10
+});
+
+// Record temporal fact
+await hippocampus.recordChronicle({
+  ownerId: 'user-123',
+  entity: 'user-123',
+  attribute: 'phone',
+  value: 'iPhone 16 Pro'
+});
+
+// Get current fact
+const fact = await hippocampus.getCurrentFact('user-123', 'user-123', 'phone');
+```
+
+### Logging
+
+The SDK includes built-in logging controlled via the `HC_LOG_LEVEL` environment variable. Logging is **off by default**.
+
+```bash
+# Enable all log levels
+HC_LOG_LEVEL=debug,info,warn,error
+
+# Enable only errors and warnings
+HC_LOG_LEVEL=warn,error
+
+# Disable logging (default)
+HC_LOG_LEVEL=off
+```
+
+You can also control logging programmatically:
+
+```typescript
+import { logger } from '@juspay/hippocampus';
+
+// Enable specific levels
+logger.setLevels(['info', 'error']);
+
+// Disable all logging
+logger.setLevels('off');
+```
+
+Log output format:
+```
+[2025-01-15T10:30:00.000Z] [HIPPOCAMPUS@0.1.0] [INFO] Adding memory {"ownerId":"user-123","strand":"general"}
+[2025-01-15T10:30:00.050Z] [HIPPOCAMPUS@0.1.0] [INFO] Memory added {"count":1}
+```
+
+## REST API
 
 ### Store a Memory
 
@@ -132,36 +206,12 @@ curl "http://localhost:4477/api/chronicles/current?ownerId=user-123&entity=user-
 curl "http://localhost:4477/api/chronicles/timeline?ownerId=user-123&entity=user-123"
 ```
 
-### Using the SDK
-
-```typescript
-import { HippocampusClient } from '@juspay/hippocampus-sdk';
-
-const client = new HippocampusClient({
-  baseUrl: 'http://localhost:4477',
-  apiKey: 'your-api-key'  // optional
-});
-
-// Store memory
-await client.addMemory({
-  ownerId: 'user-123',
-  content: 'TypeScript is a typed superset of JavaScript'
-});
-
-// Search
-const results = await client.search({
-  ownerId: 'user-123',
-  query: 'programming languages',
-  limit: 10
-});
-```
-
 ## Configuration
 
-Copy `.env.example` to `.env` in the memory-server directory:
+Copy `.env.example` to `.env` in the server directory:
 
 ```bash
-cd memory-server
+cd server
 cp .env.example .env
 ```
 
@@ -181,6 +231,7 @@ cp .env.example .env
 | `HC_EMBEDDER_PROVIDER` | `native` | Embedding provider: `native`, `openai`, `ollama` |
 | `HC_OPENAI_API_KEY` | (none) | OpenAI API key (if using openai provider) |
 | `HC_OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
+| `HC_LOG_LEVEL` | `off` | SDK/Server log levels: `debug,info,warn,error` or `off` |
 
 ### Embedding Providers
 
@@ -279,31 +330,31 @@ Weighted associations between engrams for associative recall.
 
 Relationships between chronicles (superseded_by, caused_by, related_to).
 
-See [memory-server/docs/database-schema.md](./memory-server/docs/database-schema.md) for complete schema documentation.
+See [server/docs/database-schema.md](./server/docs/database-schema.md) for complete schema documentation.
 
 ## Search Algorithm
 
 Hippocampus uses a multi-signal retrieval pipeline:
 
 ```
-finalScore = (0.30 × vectorScore)      // semantic similarity
-           + (0.30 × keywordScore)     // BM25 keyword match
-           + (0.10 × recencyBoost)     // recent access bonus
-           + (0.15 × signalBoost)      // importance score
-           + (0.15 × synapseBoost)     // associative connections
+finalScore = (0.30 x vectorScore)      // semantic similarity
+           + (0.30 x keywordScore)     // BM25 keyword match
+           + (0.10 x recencyBoost)     // recent access bonus
+           + (0.15 x signalBoost)      // importance score
+           + (0.15 x synapseBoost)     // associative connections
 ```
 
 1. **Vector Search** — Find semantically similar memories using cosine similarity
 2. **BM25 Keyword Search** — Score candidates by exact word matches
 3. **Normalize** — Min-max normalize both score sets to [0, 1]
-4. **Synapse Expansion** — BFS traversal from top seeds, depth 2, weight decay 0.8×
+4. **Synapse Expansion** — BFS traversal from top seeds, depth 2, weight decay 0.8x
 5. **Combine Scores** — Weighted sum of all signals
 6. **Post-Retrieval** — Reinforce accessed memories and synapse paths
 
 ## Testing
 
 ```bash
-cd memory-server
+cd server
 
 # Run all tests
 npm test
@@ -317,7 +368,7 @@ npm run test:sdk      # SDK integration tests
 ## Docker
 
 ```bash
-cd memory-server
+cd server
 
 # Build
 docker build -t hippocampus .
@@ -338,7 +389,7 @@ docker run -p 4477:4477 \
 
 ```
 hippocampus/
-├── memory-server/           # Backend server
+├── server/                  # Backend server
 │   ├── src/
 │   │   ├── api/             # Controllers, middleware, routes
 │   │   ├── db/              # Postgres + SQLite stores
@@ -347,16 +398,17 @@ hippocampus/
 │   │   ├── services/        # Business logic
 │   │   ├── schemas/         # Zod validation
 │   │   ├── types/           # TypeScript interfaces
-│   │   └── utils/           # Helpers
+│   │   └── utils/           # Helpers (logger, crypto, math, text)
 │   ├── tests/
 │   ├── docs/
 │   └── package.json
 │
-├── memory-sdk/              # TypeScript client SDK
+├── sdk/                     # TypeScript client SDK (@juspay/hippocampus)
 │   ├── src/
-│   │   ├── client.ts        # HippocampusClient
+│   │   ├── client.ts        # Hippocampus class
 │   │   ├── types.ts         # Request/response types
-│   │   └── errors.ts        # HippocampusError
+│   │   ├── errors.ts        # HippocampusError
+│   │   └── logger.ts        # Configurable logger
 │   └── package.json
 │
 └── README.md

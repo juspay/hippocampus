@@ -1,5 +1,7 @@
-export { HippocampusClient } from './client.js';
-export { HippocampusError } from './errors.js';
+export { Hippocampus } from './client';
+export { HippocampusError } from './errors';
+export { logger } from './logger';
+export type { LogLevel } from './logger';
 export type {
   Engram,
   EngramCreateInput,
@@ -18,5 +20,5 @@ export type {
   Strand,
   HealthResponse,
   StatusResponse,
-  HippocampusClientOptions,
-} from './types.js';
+  HippocampusOptions,
+} from './types';

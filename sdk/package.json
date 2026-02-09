@@ -1,0 +1,55 @@
+{
+  "name": "@juspay/hippocampus",
+  "version": "0.1.0",
+  "description": "TypeScript client SDK for Hippocampus memory server",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rollup --config rollup.config.js",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^22.19.8",
+    "rollup": "^4.57.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juspay/hippocampus.git",
+    "directory": "sdk"
+  },
+  "homepage": "https://github.com/juspay/hippocampus#readme",
+  "bugs": {
+    "url": "https://github.com/juspay/hippocampus/issues"
+  },
+  "keywords": [
+    "hippocampus",
+    "memory",
+    "ai",
+    "llm",
+    "semantic-search",
+    "vector-database",
+    "embeddings",
+    "ai-agents",
+    "memory-engine"
+  ]
+}

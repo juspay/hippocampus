@@ -167,7 +167,7 @@ export interface StatusResponse {
   memory: Record<string, number>;
 }
 
-export interface HippocampusClientOptions {
+export interface HippocampusOptions {
   /** Server URL. Falls back to HC_BASE_URL env var, then http://localhost:4477 */
   baseUrl?: string;
   /** API key. Falls back to HC_API_KEY env var */
