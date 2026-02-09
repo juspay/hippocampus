@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: sdk
+        run: npm ci
+
+      - name: Build SDK
+        working-directory: sdk
+        run: npm run build
+
+      - name: Verify bundle
+        working-directory: sdk
+        run: |
+          # Ensure single bundled output exists
+          test -f dist/index.js || (echo "dist/index.js not found" && exit 1)
+
+          # Ensure no __VERSION__ placeholder remains
+          if grep -q '__VERSION__' dist/index.js; then
+            echo "__VERSION__ placeholder was not replaced"
+            exit 1
+          fi
+
+          # Ensure Node.js can import it
+          node -e "import('./dist/index.js').then(m => { const keys = Object.keys(m); console.log('Exports:', keys); if (!keys.includes('Hippocampus')) { process.exit(1); } })"
+
+          echo "SDK bundle verified"
+
+  build-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: Build server
+        working-directory: server
+        run: npm run build
+
+  test:
+    needs: [build-sdk, build-server]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install SDK dependencies
+        working-directory: sdk
+        run: npm ci
+
+      - name: Install server dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: Run API tests
+        working-directory: server
+        run: npm run test:api
+
+      - name: Run temporal tests
+        working-directory: server
+        run: npm run test:temporal
+
+      - name: Run SDK integration tests
+        working-directory: server
+        run: npm run test:sdk
