@@ -125,7 +125,7 @@ jobs:
           BUMP_TYPE="${{ steps.commit-info.outputs.bump }}"
           echo "Bumping SDK version with type: $BUMP_TYPE"
 
-          NEW_VERSION=$(npm version $BUMP_TYPE --no-git-tag-version)
+          NEW_VERSION=$(pnpm version $BUMP_TYPE --no-git-tag-version)
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "SDK version bumped to: $NEW_VERSION"
 

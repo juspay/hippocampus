@@ -23,6 +23,7 @@ A self-hosted memory engine for AI agents and applications. Store, search, and r
 ### Prerequisites
 
 - Node.js 18+
+- pnpm 10+
 - PostgreSQL 14+ with pgvector (production) or SQLite (development)
 
 ### Server Installation
@@ -30,13 +31,13 @@ A self-hosted memory engine for AI agents and applications. Store, search, and r
 ```bash
 git clone https://github.com/juspay/hippocampus.git
 cd hippocampus/server
-npm install
+pnpm install
 ```
 
 ### Run with SQLite (zero config)
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Server starts at `http://localhost:4477`. Data stored in `./data/hippocampus.sqlite`.
@@ -50,7 +51,7 @@ export HC_PG_USER=postgres
 export HC_PG_PASSWORD=yourpassword
 export HC_PG_DATABASE=hippocampus
 
-npm run dev
+pnpm run dev
 ```
 
 ### Verify
@@ -63,7 +64,7 @@ curl http://localhost:4477/api/health
 ## SDK Installation
 
 ```bash
-npm install @juspay/hippocampus
+pnpm add @juspay/hippocampus
 ```
 
 ### Usage
@@ -357,12 +358,12 @@ finalScore = (0.30 x vectorScore)      // semantic similarity
 cd server
 
 # Run all tests
-npm test
+pnpm test
 
 # Run specific test suites
-npm run test:api      # API integration tests
-npm run test:temporal # Chronicle/temporal tests
-npm run test:sdk      # SDK integration tests
+pnpm run test:api      # API integration tests
+pnpm run test:temporal # Chronicle/temporal tests
+pnpm run test:sdk      # SDK integration tests
 ```
 
 ## Docker

@@ -1,5 +1,5 @@
 dist
 node_modules
 *.tgz
-package-lock.json
+pnpm-lock.yaml
 CHANGELOG.md
