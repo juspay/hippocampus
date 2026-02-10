@@ -13,18 +13,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'pnpm'
+          cache-dependency-path: sdk/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: sdk
-        run: npm ci
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        working-directory: sdk
+        run: pnpm run lint
+
+      - name: Format check
+        working-directory: sdk
+        run: pnpm run format:check
 
       - name: Build SDK
         working-directory: sdk
-        run: npm run build
+        run: pnpm run build
 
       - name: Verify bundle
         working-directory: sdk
@@ -49,18 +64,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'pnpm'
+          cache-dependency-path: server/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: server
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build server
         working-directory: server
-        run: npm run build
+        run: pnpm run build
 
   test:
     needs: [build-sdk, build-server]
@@ -69,6 +91,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -76,20 +103,20 @@ jobs:
 
       - name: Install SDK dependencies
         working-directory: sdk
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install server dependencies
         working-directory: server
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run API tests
         working-directory: server
-        run: npm run test:api
+        run: pnpm run test:api
 
       - name: Run temporal tests
         working-directory: server
-        run: npm run test:temporal
+        run: pnpm run test:temporal
 
       - name: Run SDK integration tests
         working-directory: server
-        run: npm run test:sdk
+        run: pnpm run test:sdk

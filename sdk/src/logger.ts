@@ -9,8 +9,11 @@ function parseLogLevels(input: string): Set<LogLevel> {
     return new Set();
   }
 
-  const levels = trimmed.split(',').map(s => s.trim()).filter(Boolean);
-  return new Set(levels.filter(l => ALL_LEVELS.includes(l as LogLevel)) as LogLevel[]);
+  const levels = trimmed
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return new Set(levels.filter((l) => ALL_LEVELS.includes(l as LogLevel)) as LogLevel[]);
 }
 
 let enabledLevels: Set<LogLevel> | null = null;
@@ -45,18 +48,26 @@ export const logger = {
   },
 
   debug(message: string, context?: Record<string, unknown>) {
-    if (shouldLog('debug')) console.debug(formatMessage('debug', message, context));
+    if (shouldLog('debug')) {
+      console.debug(formatMessage('debug', message, context));
+    }
   },
 
   info(message: string, context?: Record<string, unknown>) {
-    if (shouldLog('info')) console.info(formatMessage('info', message, context));
+    if (shouldLog('info')) {
+      console.info(formatMessage('info', message, context));
+    }
   },
 
   warn(message: string, context?: Record<string, unknown>) {
-    if (shouldLog('warn')) console.warn(formatMessage('warn', message, context));
+    if (shouldLog('warn')) {
+      console.warn(formatMessage('warn', message, context));
+    }
   },
 
   error(message: string, context?: Record<string, unknown>) {
-    if (shouldLog('error')) console.error(formatMessage('error', message, context));
+    if (shouldLog('error')) {
+      console.error(formatMessage('error', message, context));
+    }
   },
 };

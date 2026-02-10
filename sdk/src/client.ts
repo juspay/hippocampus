@@ -1,10 +1,19 @@
 import {
-  Engram, EngramCreateInput, EngramUpdateInput,
-  SearchQuery, SearchResult,
-  Chronicle, ChronicleCreateInput, ChronicleUpdateInput, ChronicleQuery,
-  Nexus, NexusCreateInput,
-  HealthResponse, StatusResponse,
-  HippocampusOptions, Strand,
+  Engram,
+  EngramCreateInput,
+  EngramUpdateInput,
+  SearchQuery,
+  SearchResult,
+  Chronicle,
+  ChronicleCreateInput,
+  ChronicleUpdateInput,
+  ChronicleQuery,
+  Nexus,
+  NexusCreateInput,
+  HealthResponse,
+  StatusResponse,
+  HippocampusOptions,
+  Strand,
 } from './types';
 import { HippocampusError } from './errors';
 import { logger } from './logger';
@@ -45,12 +54,21 @@ export class Hippocampus {
     return result;
   }
 
-  async listEngrams(ownerId: string, options?: { limit?: number; offset?: number; strand?: Strand }): Promise<{ engrams: Engram[]; total: number }> {
+  async listEngrams(
+    ownerId: string,
+    options?: { limit?: number; offset?: number; strand?: Strand }
+  ): Promise<{ engrams: Engram[]; total: number }> {
     logger.debug('Listing engrams', { ownerId, ...options });
     const params = new URLSearchParams({ ownerId });
-    if (options?.limit) params.set('limit', String(options.limit));
-    if (options?.offset) params.set('offset', String(options.offset));
-    if (options?.strand) params.set('strand', options.strand);
+    if (options?.limit) {
+      params.set('limit', String(options.limit));
+    }
+    if (options?.offset) {
+      params.set('offset', String(options.offset));
+    }
+    if (options?.strand) {
+      params.set('strand', options.strand);
+    }
     const result = await this.get<{ engrams: Engram[]; total: number }>(`/api/engrams?${params}`);
     logger.debug('Engrams listed', { total: result.total });
     return result;
@@ -100,13 +118,27 @@ export class Hippocampus {
   async queryChronicles(query: ChronicleQuery): Promise<{ chronicles: Chronicle[]; total: number }> {
     logger.debug('Querying chronicles', { ownerId: query.ownerId, entity: query.entity, attribute: query.attribute });
     const params = new URLSearchParams({ ownerId: query.ownerId });
-    if (query.entity) params.set('entity', query.entity);
-    if (query.attribute) params.set('attribute', query.attribute);
-    if (query.at) params.set('at', query.at);
-    if (query.from) params.set('from', query.from);
-    if (query.to) params.set('to', query.to);
-    if (query.limit) params.set('limit', String(query.limit));
-    if (query.offset) params.set('offset', String(query.offset));
+    if (query.entity) {
+      params.set('entity', query.entity);
+    }
+    if (query.attribute) {
+      params.set('attribute', query.attribute);
+    }
+    if (query.at) {
+      params.set('at', query.at);
+    }
+    if (query.from) {
+      params.set('from', query.from);
+    }
+    if (query.to) {
+      params.set('to', query.to);
+    }
+    if (query.limit) {
+      params.set('limit', String(query.limit));
+    }
+    if (query.offset) {
+      params.set('offset', String(query.offset));
+    }
     const result = await this.get<{ chronicles: Chronicle[]; total: number }>(`/api/chronicles?${params}`);
     logger.debug('Chronicles queried', { total: result.total });
     return result;
@@ -155,7 +187,9 @@ export class Hippocampus {
 
   async getRelatedChronicles(chronicleId: string): Promise<{ related: { nexus: Nexus; chronicle: Chronicle }[] }> {
     logger.debug('Getting related chronicles', { chronicleId });
-    const result = await this.get<{ related: { nexus: Nexus; chronicle: Chronicle }[] }>(`/api/chronicles/${chronicleId}/related`);
+    const result = await this.get<{ related: { nexus: Nexus; chronicle: Chronicle }[] }>(
+      `/api/chronicles/${chronicleId}/related`
+    );
     logger.debug('Related chronicles retrieved', { count: result.related.length });
     return result;
   }
@@ -236,7 +270,7 @@ export class Hippocampus {
             nextRetryIn: `${delay}ms`,
             error: lastError.message,
           });
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         } else {
           logger.error('Request failed after all retries', {
             method,

@@ -75,15 +75,22 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+          cache-dependency-path: sdk/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: sdk
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Configure Git
         run: |
@@ -126,7 +133,7 @@ jobs:
         working-directory: sdk
         run: |
           echo "Building SDK with new version..."
-          npm run build
+          pnpm run build
 
       - name: Check if version already published
         id: version-check
@@ -153,7 +160,7 @@ jobs:
         working-directory: sdk
         run: |
           echo "Publishing to NPM..."
-          npm publish --access public
+          pnpm publish --access public --no-git-checks
           echo "NPM publish successful!"
           echo "publish_success=true" >> $GITHUB_OUTPUT
         env:
@@ -173,7 +180,7 @@ jobs:
           NEW_VERSION="${{ steps.version-bump.outputs.new_version }}"
           BUMP_TYPE="${{ steps.commit-info.outputs.bump }}"
 
-          git add sdk/package.json sdk/package-lock.json
+          git add sdk/package.json
           git commit -m "chore: release @juspay/hippocampus $NEW_VERSION"
 
           git tag -a "sdk-$NEW_VERSION" -m "Release @juspay/hippocampus $NEW_VERSION"
@@ -187,7 +194,7 @@ jobs:
         working-directory: sdk
         run: |
           echo "NPM publish failed, rolling back version change..."
-          git checkout -- package.json package-lock.json
+          git checkout -- package.json
           echo "Version rollback completed"
 
   test-server:
@@ -198,6 +205,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -205,16 +217,16 @@ jobs:
 
       - name: Install SDK dependencies
         working-directory: sdk
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install server dependencies
         working-directory: server
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build server
         working-directory: server
-        run: npm run build
+        run: pnpm run build
 
       - name: Run all tests
         working-directory: server
-        run: npm test
+        run: pnpm test
