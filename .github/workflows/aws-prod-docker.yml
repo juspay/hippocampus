@@ -3,7 +3,7 @@ name: Build & Push Docker Image to AWS ECR (Prod)
 on:
   push:
     branches:
-      - release
+      - main
 
 permissions:
   id-token: write
