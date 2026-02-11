@@ -1,6 +1,10 @@
 node_modules
 dist
 data
+tests
 .env
 .env.*
 *.sqlite
+*.tsbuildinfo
+*.log
+.DS_Store

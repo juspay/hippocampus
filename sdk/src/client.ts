@@ -34,7 +34,7 @@ export class Hippocampus {
       ...(apiKey ? { 'X-API-Key': apiKey } : {}),
       ...options.headers,
     };
-    this.retries = options.retries ?? 3;
+    this.retries = options.retries ?? 0;
     this.retryDelay = options.retryDelay ?? 1000;
 
     logger.debug('Hippocampus client initialized', {
