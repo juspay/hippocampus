@@ -3,16 +3,16 @@ import { DatabaseConfig } from '../types/config.types.js';
 import { PostgresStore } from './postgres.store.js';
 import { SqliteStore } from './sqlite.store.js';
 import { logger } from '../utils/logger.js';
+import { getConfig } from '../config.js';
 import path from 'path';
 import fs from 'fs';
 
 export function resolveDatabaseConfig(): DatabaseConfig {
-  const pgHost = process.env.HC_PG_HOST;
-  const databaseUrl = process.env.HC_DATABASE_URL;
+  const db = getConfig().database;
 
-  if (pgHost || databaseUrl) {
-    if (databaseUrl) {
-      const url = new URL(databaseUrl);
+  if (db.pgHost || db.databaseUrl) {
+    if (db.databaseUrl) {
+      const url = new URL(db.databaseUrl);
       return {
         type: 'postgres',
         postgres: {
@@ -29,18 +29,17 @@ export function resolveDatabaseConfig(): DatabaseConfig {
     return {
       type: 'postgres',
       postgres: {
-        host: pgHost!,
-        port: parseInt(process.env.HC_PG_PORT || '5432', 10),
-        database: process.env.HC_PG_DATABASE || 'hippocampus',
-        user: process.env.HC_PG_USER || 'postgres',
-        password: process.env.HC_PG_PASSWORD || '',
-        ssl: process.env.HC_PG_SSL === 'true',
+        host: db.pgHost!,
+        port: db.pgPort,
+        database: db.pgDatabase,
+        user: db.pgUser,
+        password: db.pgPassword,
+        ssl: db.pgSsl,
       },
     };
   }
 
-  const sqlitePath = process.env.HC_SQLITE_PATH || path.join(process.cwd(), 'data', 'hippocampus.sqlite');
-  return { type: 'sqlite', sqlite: { path: sqlitePath } };
+  return { type: 'sqlite', sqlite: { path: db.sqlitePath } };
 }
 
 export async function createDataStore(config?: DatabaseConfig, embeddingDimensions?: number): Promise<DataStore> {

@@ -38,6 +38,11 @@ export class MemoryService {
     const { facts, strand, temporalFacts } = await this.factExtraction.extract(input.content);
     const effectiveStrand = input.strand || strand;
 
+    if (facts.length === 0 && temporalFacts.length === 0) {
+      logger.info('No extractable facts found, skipping storage', { ownerId: input.ownerId });
+      return [];
+    }
+
     const storedEngrams: Engram[] = [];
 
     for (const fact of facts) {

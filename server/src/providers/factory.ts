@@ -5,9 +5,10 @@ import { NativeEmbedder } from './native-embedder.js';
 import { OpenAICompletion } from './openai-completion.js';
 import { OllamaCompletion } from './ollama-completion.js';
 import { NativeCompletion } from './native-completion.js';
+import { getConfig } from '../config.js';
+import type { EmbedderProviderType, CompletionProviderType } from '../config.js';
 
-export type EmbedderProviderType = 'openai' | 'ollama' | 'native';
-export type CompletionProviderType = 'openai' | 'ollama' | 'native';
+export type { EmbedderProviderType, CompletionProviderType };
 
 export interface ProviderOptions {
   embedder: {
@@ -52,20 +53,27 @@ export class ProviderFactory {
     }
   }
 
-  static createFromEnv(): { embedder: EmbedderProvider; completion: CompletionProvider } {
-    const embedderProvider = (process.env.HC_EMBEDDER_PROVIDER || 'native') as EmbedderProviderType;
-    const completionProvider = (process.env.HC_COMPLETION_PROVIDER || 'native') as CompletionProviderType;
+  static createFromConfig(): { embedder: EmbedderProvider; completion: CompletionProvider } {
+    const cfg = getConfig();
 
     return {
       embedder: ProviderFactory.createEmbedder({
-        provider: embedderProvider,
-        model: process.env.HC_EMBEDDER_MODEL,
-        dimensions: process.env.HC_EMBEDDING_DIMENSIONS ? parseInt(process.env.HC_EMBEDDING_DIMENSIONS, 10) : undefined,
+        provider: cfg.embedder.provider,
+        model: cfg.embedder.model,
+        dimensions: cfg.embedder.dimensions,
+        apiKey: cfg.providerKeys.openaiApiKey,
+        baseUrl: cfg.providerKeys.ollamaBaseUrl,
       }),
       completion: ProviderFactory.createCompletion({
-        provider: completionProvider,
-        model: process.env.HC_COMPLETION_MODEL,
+        provider: cfg.completion.provider,
+        model: cfg.completion.model,
+        apiKey: cfg.providerKeys.openaiApiKey,
+        baseUrl: cfg.providerKeys.ollamaBaseUrl,
       }),
     };
+  }
+
+  static createFromEnv(): { embedder: EmbedderProvider; completion: CompletionProvider } {
+    return ProviderFactory.createFromConfig();
   }
 }

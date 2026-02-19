@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { createApiError } from './error-handler.js';
 import { logger } from '../../utils/logger.js';
-
-const HC_API_KEY = process.env.HC_API_KEY;
+import { getConfig } from '../../config.js';
 
 export function authGuard(req: Request, _res: Response, next: NextFunction): void {
-  if (!HC_API_KEY) {
+  const { apiKey } = getConfig().server;
+
+  if (!apiKey) {
     // No key configured — auth disabled
     return next();
   }
@@ -20,7 +21,7 @@ export function authGuard(req: Request, _res: Response, next: NextFunction): voi
     return next(createApiError(401, 'Missing API key. Provide via X-API-Key header or Authorization: Bearer <key>'));
   }
 
-  if (provided !== HC_API_KEY) {
+  if (provided !== apiKey) {
     logger.warn('Invalid API key', { path: req.path });
     return next(createApiError(403, 'Invalid API key'));
   }

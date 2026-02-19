@@ -9,9 +9,9 @@ export class OpenAIEmbedder implements EmbedderProvider {
   readonly name = 'openai';
 
   constructor(apiKey?: string, model?: string, dimensions?: number) {
-    this.client = new OpenAI({ apiKey: apiKey || process.env.HC_OPENAI_API_KEY });
-    this.model = model || process.env.HC_EMBEDDER_MODEL || 'text-embedding-3-small';
-    this.dimensions = dimensions || parseInt(process.env.HC_EMBEDDING_DIMENSIONS || '1536', 10);
+    this.client = new OpenAI({ apiKey: apiKey || undefined });
+    this.model = model || 'text-embedding-3-small';
+    this.dimensions = dimensions || 1536;
   }
 
   async embed(text: string): Promise<number[]> {

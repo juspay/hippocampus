@@ -1,6 +1,12 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { loadConfig } from './config.js';
+const config = loadConfig();
+
+import { initLogger, logger } from './utils/logger.js';
+initLogger(config.server.logLevel);
+
 import express from 'express';
 import cors from 'cors';
 import { createDataStore } from './db/index.js';
@@ -14,15 +20,13 @@ import { SystemController } from './api/controllers/system.controller.js';
 import { mountRoutes } from './api/routes/index.js';
 import { errorHandler, notFound } from './api/middleware/error-handler.js';
 import { authGuard } from './api/middleware/auth.js';
-import { logger } from './utils/logger.js';
 
 async function bootstrap(): Promise<void> {
-  const port = parseInt(process.env.HC_PORT || '4477', 10);
-  const host = process.env.HC_HOST || '0.0.0.0';
+  const { port, host } = config.server;
 
   // 1. Create providers
   logger.info('Creating AI providers...');
-  const { embedder, completion } = ProviderFactory.createFromEnv();
+  const { embedder, completion } = ProviderFactory.createFromConfig();
 
   // 2. Initialize database
   logger.info('Initializing database...');

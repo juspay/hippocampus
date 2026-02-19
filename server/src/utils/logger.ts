@@ -17,7 +17,7 @@ let enabledLevels: Set<LogLevel> | null = null;
 
 function getEnabledLevels(): Set<LogLevel> {
   if (enabledLevels === null) {
-    enabledLevels = parseLogLevels(process.env.HC_LOG_LEVEL || 'off');
+    enabledLevels = new Set<LogLevel>();
   }
   return enabledLevels;
 }
@@ -33,6 +33,10 @@ function formatMessage(level: LogLevel, message: string, context?: Record<string
     return `${base} ${JSON.stringify(context)}`;
   }
   return base;
+}
+
+export function initLogger(logLevel: string): void {
+  enabledLevels = parseLogLevels(logLevel);
 }
 
 export const logger = {
