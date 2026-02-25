@@ -8,10 +8,20 @@ function config() {
     {
       input: 'src/index.ts',
       output: {
-        file: 'dist/index.js',
+        dir: 'dist',
         format: 'esm',
         sourcemap: false,
+        preserveModules: true,
+        preserveModulesRoot: 'src',
       },
+      external: [
+        '@juspay/neurolink',
+        'better-sqlite3',
+        'redis',
+        '@aws-sdk/client-s3',
+        'path',
+        'fs',
+      ],
       plugins: [
         nodeResolve(),
         replace({

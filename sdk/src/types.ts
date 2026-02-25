@@ -1,178 +1,54 @@
-export type Strand = 'factual' | 'experiential' | 'procedural' | 'preferential' | 'relational' | 'general';
+/** Storage backend type */
+export type StorageType = 'sqlite' | 'redis' | 's3';
 
-export interface Engram {
-  id: string;
-  ownerId: string;
-  content: string;
-  contentHash: string;
-  strand: Strand;
-  tags: string[];
-  metadata: Record<string, unknown>;
-  signal: number;
-  pulseRate: number;
-  accessCount: number;
-  version: number;
-  createdAt: string;
-  updatedAt: string;
-  lastAccessedAt: string;
+export interface StorageBackend {
+  get(ownerId: string): Promise<string | null>;
+  set(ownerId: string, memory: string): Promise<void>;
+  delete(ownerId: string): Promise<void>;
+  close(): Promise<void>;
 }
 
-export interface EngramCreateInput {
-  ownerId: string;
-  content: string;
-  strand?: Strand;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-  signal?: number;
-  pulseRate?: number;
+export interface SqliteStorageConfig {
+  type: 'sqlite';
+  /** Path to SQLite file. Default: ./data/hippocampus.sqlite */
+  path?: string;
 }
 
-export interface EngramUpdateInput {
-  content?: string;
-  strand?: Strand;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-  signal?: number;
-  pulseRate?: number;
+export interface RedisStorageConfig {
+  type: 'redis';
+  host?: string;
+  port?: number;
+  password?: string;
+  db?: number;
+  keyPrefix?: string;
+  ttl?: number;
 }
 
-export interface RetrievalTrace {
-  vectorScore: number;
-  keywordScore: number;
-  recencyBoost: number;
-  signalBoost: number;
-  synapseBoost: number;
-  finalScore: number;
+/** S3 storage config */
+export interface S3StorageConfig {
+  type: 's3';
+  bucket: string;
+  /**
+   * Key prefix (folder path). The ownerId is appended to this.
+   * Default: 'hippocampus/memories/'
+   *
+   * Example: prefix='app/memories/' + ownerId='user-123'
+   *   → s3://bucket/app/memories/user-123
+   */
+  prefix?: string;
 }
 
-export interface SearchHit {
-  engram: {
-    id: string;
-    ownerId: string;
-    content: string;
-    strand: Strand;
-    tags: string[];
-    metadata: Record<string, unknown>;
-    signal: number;
-    accessCount: number;
-    createdAt: string;
-    updatedAt: string;
-    lastAccessedAt: string;
+export type StorageConfig = SqliteStorageConfig | RedisStorageConfig | S3StorageConfig;
+
+export interface HippocampusConfig {
+  storage?: StorageConfig;
+  prompt?: string;
+  neurolink?: {
+    provider?: string;
+    model?: string;
+    temperature?: number;
   };
-  trace: RetrievalTrace;
+  maxWords?: number;
 }
 
-export interface ChronicleHit {
-  chronicle: Chronicle;
-  relevance: number;
-}
 
-export interface SearchResult {
-  hits: SearchHit[];
-  chronicles: ChronicleHit[];
-  total: number;
-  query: string;
-  took: number;
-}
-
-export interface SearchQuery {
-  ownerId: string;
-  query: string;
-  limit?: number;
-  offset?: number;
-  strand?: Strand;
-  tags?: string[];
-  minSignal?: number;
-  minScore?: number;
-  expandSynapses?: boolean;
-}
-
-export interface Chronicle {
-  id: string;
-  ownerId: string;
-  entity: string;
-  attribute: string;
-  value: string;
-  certainty: number;
-  effectiveFrom: string;
-  effectiveUntil: string | null;
-  recordedAt: string;
-  metadata: Record<string, unknown>;
-}
-
-export interface ChronicleCreateInput {
-  ownerId: string;
-  entity: string;
-  attribute: string;
-  value: string;
-  certainty?: number;
-  effectiveFrom?: string;
-  effectiveUntil?: string | null;
-  metadata?: Record<string, unknown>;
-}
-
-export interface ChronicleUpdateInput {
-  certainty?: number;
-  effectiveUntil?: string | null;
-  metadata?: Record<string, unknown>;
-}
-
-export interface ChronicleQuery {
-  ownerId: string;
-  entity?: string;
-  attribute?: string;
-  at?: string;
-  from?: string;
-  to?: string;
-  limit?: number;
-  offset?: number;
-}
-
-export interface Nexus {
-  id: string;
-  originId: string;
-  linkedId: string;
-  bondType: string;
-  strength: number;
-  effectiveFrom: string;
-  effectiveUntil: string | null;
-  metadata: Record<string, unknown>;
-}
-
-export interface NexusCreateInput {
-  originId: string;
-  linkedId: string;
-  bondType: string;
-  strength?: number;
-  effectiveFrom?: string;
-  effectiveUntil?: string | null;
-  metadata?: Record<string, unknown>;
-}
-
-export interface HealthResponse {
-  status: string;
-  database: string;
-  timestamp: string;
-}
-
-export interface StatusResponse {
-  database: string;
-  stats: {
-    engrams: number;
-    synapses: number;
-    chronicles: number;
-    nexuses: number;
-  };
-  uptime: number;
-  memory: Record<string, number>;
-}
-
-export interface HippocampusOptions {
-  /** Server URL. Falls back to HC_BASE_URL env var, then http://localhost:4477 */
-  baseUrl?: string;
-  /** API key. Falls back to HC_API_KEY env var */
-  apiKey?: string;
-  headers?: Record<string, string>;
-  retries?: number;
-  retryDelay?: number;
-}

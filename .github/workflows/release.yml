@@ -1,70 +1,18 @@
 name: Release and Publish
 
 on:
-  pull_request:
-    branches: [release]
-    types: [closed]
+  push:
+    branches: [main]
+    paths:
+      - 'sdk/**'
 
 jobs:
-  detect-changes:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    outputs:
-      sdk_changed: ${{ steps.changes.outputs.sdk_changed }}
-      server_changed: ${{ steps.changes.outputs.server_changed }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Detect package changes
-        id: changes
-        run: |
-          PR_COMMITS=${{ github.event.pull_request.commits }}
-
-          BASE_SHA=$(git rev-parse HEAD~${PR_COMMITS})
-          HEAD_SHA=$(git rev-parse HEAD)
-
-          echo "PR had $PR_COMMITS commit(s)"
-          echo "Comparing $BASE_SHA to $HEAD_SHA"
-
-          CHANGED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA)
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
-
-          # Check for SDK changes
-          SDK_CHANGES=$(echo "$CHANGED_FILES" | grep "^sdk/" || true)
-          if [ -n "$SDK_CHANGES" ]; then
-            echo "sdk_changed=true" >> $GITHUB_OUTPUT
-            echo "SDK has changes:"
-            echo "$SDK_CHANGES"
-          else
-            echo "sdk_changed=false" >> $GITHUB_OUTPUT
-            echo "No SDK changes detected"
-          fi
-
-          # Check for server changes
-          SERVER_CHANGES=$(echo "$CHANGED_FILES" | grep "^server/" || true)
-          if [ -n "$SERVER_CHANGES" ]; then
-            echo "server_changed=true" >> $GITHUB_OUTPUT
-            echo "Server has changes:"
-            echo "$SERVER_CHANGES"
-          else
-            echo "server_changed=false" >> $GITHUB_OUTPUT
-            echo "No server changes detected"
-          fi
-
   publish-sdk:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.sdk_changed == 'true'
     runs-on: ubuntu-latest
 
     permissions:
       contents: write
       packages: write
-      pull-requests: write
 
     environment: publish-env
 
@@ -75,12 +23,25 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Skip if version bump commit
+        id: skip-check
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          if [[ "$COMMIT_MSG" == chore:\ release\ @juspay/hippocampus* ]]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Skipping — this is an auto-generated version bump commit"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup pnpm
+        if: steps.skip-check.outputs.skip != 'true'
         uses: pnpm/action-setup@v4
         with:
           version: 10
 
       - name: Setup Node.js
+        if: steps.skip-check.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -89,144 +50,92 @@ jobs:
           cache-dependency-path: sdk/pnpm-lock.yaml
 
       - name: Install dependencies
+        if: steps.skip-check.outputs.skip != 'true'
         working-directory: sdk
         run: pnpm install --frozen-lockfile
 
       - name: Configure Git
+        if: steps.skip-check.outputs.skip != 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-      - name: Get latest commit info
+      - name: Determine version bump
+        if: steps.skip-check.outputs.skip != 'true'
         id: commit-info
         run: |
           COMMIT_MSG=$(git log -1 --pretty=format:"%s")
           echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
 
-          # Determine semantic version bump based on conventional commit
           if [[ "$COMMIT_MSG" =~ ^feat(\(.+\))?!: ]] || [[ "$COMMIT_MSG" =~ BREAKING[[:space:]]CHANGE ]]; then
             echo "bump=major" >> $GITHUB_OUTPUT
-            echo "Detected BREAKING CHANGE - will perform major version bump"
+            echo "Detected BREAKING CHANGE - major version bump"
           elif [[ "$COMMIT_MSG" =~ ^feat(\(.+\))?: ]]; then
             echo "bump=minor" >> $GITHUB_OUTPUT
-            echo "Detected feature commit - will perform minor version bump"
-          elif [[ "$COMMIT_MSG" =~ ^fix(\(.+\))?: ]] || [[ "$COMMIT_MSG" =~ ^perf(\(.+\))?: ]]; then
-            echo "bump=patch" >> $GITHUB_OUTPUT
-            echo "Detected fix/perf commit - will perform patch version bump"
+            echo "Detected feature - minor version bump"
           else
             echo "bump=patch" >> $GITHUB_OUTPUT
-            echo "No specific commit type detected - defaulting to patch version bump"
+            echo "Defaulting to patch version bump"
           fi
 
       - name: Bump version
+        if: steps.skip-check.outputs.skip != 'true'
         id: version-bump
         working-directory: sdk
         run: |
           BUMP_TYPE="${{ steps.commit-info.outputs.bump }}"
-          echo "Bumping SDK version with type: $BUMP_TYPE"
-
           NEW_VERSION=$(pnpm version $BUMP_TYPE --no-git-tag-version)
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "SDK version bumped to: $NEW_VERSION"
 
       - name: Build SDK
+        if: steps.skip-check.outputs.skip != 'true'
         working-directory: sdk
-        run: |
-          echo "Building SDK with new version..."
-          pnpm run build
+        run: pnpm run build
 
       - name: Check if version already published
+        if: steps.skip-check.outputs.skip != 'true'
         id: version-check
         working-directory: sdk
         run: |
           NEW_VERSION="${{ steps.version-bump.outputs.new_version }}"
           PACKAGE_NAME=$(node -p "require('./package.json').name")
 
-          echo "Checking if $PACKAGE_NAME@$NEW_VERSION is already published..."
-
           if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null; then
-            echo "Version $NEW_VERSION is already published on NPM"
-            echo "already_published=true" >> $GITHUB_OUTPUT
+            echo "Version $NEW_VERSION already published — skipping"
             echo "should_publish=false" >> $GITHUB_OUTPUT
           else
-            echo "Version $NEW_VERSION is not published yet"
-            echo "already_published=false" >> $GITHUB_OUTPUT
+            echo "Version $NEW_VERSION not published yet"
             echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Publish to NPM
+        if: steps.skip-check.outputs.skip != 'true' && steps.version-check.outputs.should_publish == 'true'
         id: npm-publish
-        if: steps.version-check.outputs.should_publish == 'true'
         working-directory: sdk
         run: |
-          echo "Publishing to NPM..."
           pnpm publish --access public --no-git-checks
-          echo "NPM publish successful!"
+          echo "Published to NPM successfully"
           echo "publish_success=true" >> $GITHUB_OUTPUT
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Skip publish (already exists)
-        id: skip-publish
-        if: steps.version-check.outputs.already_published == 'true'
+      - name: Commit version bump and tag
+        if: steps.npm-publish.outputs.publish_success == 'true'
         run: |
           NEW_VERSION="${{ steps.version-bump.outputs.new_version }}"
-          echo "Skipping NPM publish - version $NEW_VERSION already exists"
-          echo "publish_success=true" >> $GITHUB_OUTPUT
-
-      - name: Commit and tag release
-        if: steps.npm-publish.outputs.publish_success == 'true' || steps.skip-publish.outputs.publish_success == 'true'
-        run: |
-          NEW_VERSION="${{ steps.version-bump.outputs.new_version }}"
-          BUMP_TYPE="${{ steps.commit-info.outputs.bump }}"
 
           git add sdk/package.json
           git commit -m "chore: release @juspay/hippocampus $NEW_VERSION"
-
           git tag -a "sdk-$NEW_VERSION" -m "Release @juspay/hippocampus $NEW_VERSION"
-          git push origin release
+          git push origin main
           git push origin --tags
 
-          echo "Released @juspay/hippocampus $NEW_VERSION with $BUMP_TYPE bump"
+          echo "Released @juspay/hippocampus $NEW_VERSION"
 
-      - name: Rollback on publish failure
+      - name: Rollback on failure
         if: failure() && steps.npm-publish.conclusion == 'failure'
         working-directory: sdk
         run: |
-          echo "NPM publish failed, rolling back version change..."
           git checkout -- package.json
           echo "Version rollback completed"
-
-  test-server:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.server_changed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install SDK dependencies
-        working-directory: sdk
-        run: pnpm install --frozen-lockfile
-
-      - name: Install server dependencies
-        working-directory: server
-        run: pnpm install --frozen-lockfile
-
-      - name: Build server
-        working-directory: server
-        run: pnpm run build
-
-      - name: Run all tests
-        working-directory: server
-        run: pnpm test

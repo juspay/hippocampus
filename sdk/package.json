@@ -1,7 +1,7 @@
 {
   "name": "@juspay/hippocampus",
   "version": "0.1.0",
-  "description": "TypeScript client SDK for Hippocampus memory server",
+  "description": "Embedded memory SDK — condensed key-value memory",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,11 +20,29 @@
     "format:check": "prettier --check 'src/**/*.ts' '*.json' '*.js'",
     "prepublishOnly": "pnpm run clean && pnpm run build"
   },
+  "peerDependencies": {
+    "@aws-sdk/client-s3": ">=3.0.0",
+    "@juspay/neurolink": ">=9.0.0",
+    "better-sqlite3": ">=11.0.0",
+    "redis": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "better-sqlite3": {
+      "optional": true
+    },
+    "redis": {
+      "optional": true
+    },
+    "@aws-sdk/client-s3": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.19.8",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
@@ -56,10 +74,8 @@
     "memory",
     "ai",
     "llm",
-    "semantic-search",
-    "vector-database",
-    "embeddings",
-    "ai-agents",
-    "memory-engine"
+    "neurolink",
+    "key-value",
+    "condensed-memory"
   ]
 }
