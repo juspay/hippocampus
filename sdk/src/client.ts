@@ -34,10 +34,7 @@ export class Hippocampus {
   constructor(config: HippocampusConfig = {}) {
     this.config = config;
     this.storageConfig = config.storage || { type: 'sqlite' };
-    this.prompt =
-      config.prompt ||
-      process.env.HC_CONDENSATION_PROMPT ||
-      DEFAULT_PROMPT;
+    this.prompt = config.prompt || process.env.HC_CONDENSATION_PROMPT || DEFAULT_PROMPT;
     this.maxWords = config.maxWords || 50;
 
     logger.info('Hippocampus initialized', {

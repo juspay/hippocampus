@@ -50,5 +50,3 @@ export interface HippocampusConfig {
   };
   maxWords?: number;
 }
-
-

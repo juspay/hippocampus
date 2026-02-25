@@ -46,7 +46,7 @@ export class S3Storage implements StorageBackend {
         new GetObjectCommand({
           Bucket: this.bucket,
           Key: this.objectKey(ownerId),
-        }),
+        })
       );
       return (await response.Body?.transformToString('utf-8')) ?? null;
     } catch (error: unknown) {
@@ -74,7 +74,7 @@ export class S3Storage implements StorageBackend {
           Key: this.objectKey(ownerId),
           Body: memory,
           ContentType: 'text/plain; charset=utf-8',
-        }),
+        })
       );
     } catch (error) {
       logger.error('S3 set failed', {
@@ -94,7 +94,7 @@ export class S3Storage implements StorageBackend {
         new DeleteObjectCommand({
           Bucket: this.bucket,
           Key: this.objectKey(ownerId),
-        }),
+        })
       );
     } catch (error) {
       logger.error('S3 delete failed', {

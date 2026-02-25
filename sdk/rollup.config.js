@@ -14,14 +14,7 @@ function config() {
         preserveModules: true,
         preserveModulesRoot: 'src',
       },
-      external: [
-        '@juspay/neurolink',
-        'better-sqlite3',
-        'redis',
-        '@aws-sdk/client-s3',
-        'path',
-        'fs',
-      ],
+      external: ['@juspay/neurolink', 'better-sqlite3', 'redis', '@aws-sdk/client-s3', 'path', 'fs'],
       plugins: [
         nodeResolve(),
         replace({

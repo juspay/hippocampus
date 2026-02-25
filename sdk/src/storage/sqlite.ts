@@ -73,7 +73,7 @@ export class SqliteStorage implements StorageBackend {
       const db = this.ensureDb();
       db.prepare(
         `INSERT INTO memories (owner_id, memory, updated_at) VALUES (?, ?, datetime('now'))
-         ON CONFLICT(owner_id) DO UPDATE SET memory = excluded.memory, updated_at = excluded.updated_at`,
+         ON CONFLICT(owner_id) DO UPDATE SET memory = excluded.memory, updated_at = excluded.updated_at`
       ).run(ownerId, memory);
     } catch (error) {
       logger.error('SQLite set failed', {
