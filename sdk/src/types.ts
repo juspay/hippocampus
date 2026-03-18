@@ -1,5 +1,5 @@
 /** Storage backend type */
-export type StorageType = 'sqlite' | 'redis' | 's3';
+export type StorageType = 'sqlite' | 'redis' | 's3' | 'custom';
 
 export interface StorageBackend {
   get(ownerId: string): Promise<string | null>;
@@ -28,17 +28,18 @@ export interface RedisStorageConfig {
 export interface S3StorageConfig {
   type: 's3';
   bucket: string;
-  /**
-   * Key prefix (folder path). The ownerId is appended to this.
-   * Default: 'hippocampus/memories/'
-   *
-   * Example: prefix='app/memories/' + ownerId='user-123'
-   *   → s3://bucket/app/memories/user-123
-   */
   prefix?: string;
 }
 
-export type StorageConfig = SqliteStorageConfig | RedisStorageConfig | S3StorageConfig;
+export interface CustomStorageConfig {
+  type: 'custom';
+  onGet: (ownerId: string) => Promise<string | null>;
+  onSet: (ownerId: string, memory: string) => Promise<void>;
+  onDelete: (ownerId: string) => Promise<void>;
+  onClose?: () => Promise<void>;
+}
+
+export type StorageConfig = SqliteStorageConfig | RedisStorageConfig | S3StorageConfig | CustomStorageConfig;
 
 export interface HippocampusConfig {
   storage?: StorageConfig;

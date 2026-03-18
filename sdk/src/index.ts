@@ -9,9 +9,11 @@ export type {
   SqliteStorageConfig,
   RedisStorageConfig,
   S3StorageConfig,
+  CustomStorageConfig,
   HippocampusConfig,
 } from './types';
 
 export { SqliteStorage } from './storage/sqlite';
 export { RedisStorage } from './storage/redis';
 export { S3Storage } from './storage/s3';
+export { CustomStorage } from './storage/custom';

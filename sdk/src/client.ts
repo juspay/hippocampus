@@ -65,6 +65,11 @@ export class Hippocampus {
           this.storage = new S3Storage(this.storageConfig);
           break;
         }
+        case 'custom': {
+          const { CustomStorage } = await import('./storage/custom');
+          this.storage = new CustomStorage(this.storageConfig);
+          break;
+        }
         default:
           logger.error('Unknown storage type', {
             type: (this.storageConfig as { type: string }).type,
@@ -137,8 +142,9 @@ export class Hippocampus {
         .replaceAll('{{NEW_CONTENT}}', content)
         .replaceAll('{{MAX_WORDS}}', String(this.maxWords));
 
-      logger.debug('Condensing memory', {
+      logger.debug('Condensing memory Request', {
         ownerId,
+        oldMemory: oldMemory,
         oldMemoryLength: oldMemory.length,
         newContentLength: content.length,
       });
@@ -164,7 +170,7 @@ export class Hippocampus {
       if (condensed) {
         try {
           await storage.set(ownerId, condensed);
-          logger.info('Memory updated', { ownerId, words: condensed.split(/\s+/).length });
+          logger.info('Memory updated', { ownerId, words: condensed.split(/\s+/).length, newMemory: condensed });
         } catch (error) {
           logger.error('Failed to persist condensed memory', {
             ownerId,
