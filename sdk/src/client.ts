@@ -1,4 +1,4 @@
-import type { HippocampusConfig, StorageBackend, StorageConfig } from './types';
+import type { AddOptions, HippocampusConfig, StorageBackend, StorageConfig } from './types';
 import { logger } from './logger';
 
 const DEFAULT_PROMPT = `You are a memory condensation engine. You receive:
@@ -113,9 +113,10 @@ export class Hippocampus {
    *
    * @param ownerId - Unique identifier (user ID, session ID, etc.)
    * @param content - New conversation content to incorporate
+   * @param options - Optional per-call overrides for prompt and maxWords
    * @returns The condensed memory string that was stored, or empty string on failure
    */
-  async add(ownerId: string, content: string): Promise<string> {
+  async add(ownerId: string, content: string, options?: AddOptions): Promise<string> {
     try {
       const storage = await this.ensureStorage();
       if (!storage) {
@@ -137,16 +138,21 @@ export class Hippocampus {
         });
       }
 
-      const filledPrompt = this.prompt
+      const effectivePrompt = options?.prompt || this.prompt;
+      const effectiveMaxWords = options?.maxWords || this.maxWords;
+
+      const filledPrompt = effectivePrompt
         .replaceAll('{{OLD_MEMORY}}', oldMemory || '(none)')
         .replaceAll('{{NEW_CONTENT}}', content)
-        .replaceAll('{{MAX_WORDS}}', String(this.maxWords));
+        .replaceAll('{{MAX_WORDS}}', String(effectiveMaxWords));
 
       logger.debug('Condensing memory Request', {
         ownerId,
         oldMemory: oldMemory,
         oldMemoryLength: oldMemory.length,
         newContentLength: content.length,
+        customPrompt: !!options?.prompt,
+        maxWords: effectiveMaxWords,
       });
 
       let condensed = '';

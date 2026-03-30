@@ -11,6 +11,7 @@ export type {
   S3StorageConfig,
   CustomStorageConfig,
   HippocampusConfig,
+  AddOptions,
 } from './types';
 
 export { SqliteStorage } from './storage/sqlite';

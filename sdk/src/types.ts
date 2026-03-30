@@ -51,3 +51,8 @@ export interface HippocampusConfig {
   };
   maxWords?: number;
 }
+
+export interface AddOptions {
+  prompt?: string;
+  maxWords?: number;
+}

@@ -222,13 +222,17 @@ interface HippocampusConfig {
 }
 ```
 
-### `memory.add(ownerId, content): Promise<string>`
+### `memory.add(ownerId, content, options?): Promise<string>`
 
 Fetches existing memory, condenses it with new content via LLM, and stores the result.
 
 - **ownerId** — Unique identifier (user ID, session ID, etc.)
 - **content** — New conversation content to incorporate
+- **options.prompt** — Per-call condensation prompt override (must include `{{OLD_MEMORY}}`, `{{NEW_CONTENT}}`, `{{MAX_WORDS}}` placeholders)
+- **options.maxWords** — Per-call max words override
 - **Returns** — The condensed memory string, or empty string on failure
+
+When `options` is omitted, the constructor-level `prompt` and `maxWords` are used.
 
 ### `memory.get(ownerId): Promise<string | null>`
 
@@ -270,6 +274,32 @@ Available placeholders:
 | `{{OLD_MEMORY}}`  | The user's existing condensed memory (or `"(none)"`)       |
 | `{{NEW_CONTENT}}` | The new conversation content                               |
 | `{{MAX_WORDS}}`   | The configured `maxWords` value                            |
+
+### Per-Call Overrides
+
+The `add()` method accepts an optional `options` parameter to override `prompt` and `maxWords` for a specific call. This is useful when a single Hippocampus instance manages different memory scopes that need different condensation strategies.
+
+```typescript
+// Personal user memory — uses constructor defaults
+await memory.add("user-alice", conversation);
+
+// Org-level policy memory — custom prompt, higher word limit
+await memory.add("org-acme", conversation, {
+  prompt: `Extract only compliance requirements, security policies, and org decisions.
+
+OLD_MEMORY:
+{{OLD_MEMORY}}
+
+NEW_CONTENT:
+{{NEW_CONTENT}}
+
+Condensed memory (max {{MAX_WORDS}} words):`,
+  maxWords: 100,
+});
+
+// Team context — just a higher word limit
+await memory.add("team-payments", conversation, { maxWords: 75 });
+```
 
 ## Usage with NeuroLink
 
@@ -334,6 +364,7 @@ import type {
   S3StorageConfig,
   CustomStorageConfig,
   HippocampusConfig,
+  AddOptions, // Per-call overrides for add(): { prompt?, maxWords? }
 } from "@juspay/hippocampus";
 ```
 
