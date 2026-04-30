@@ -76,7 +76,7 @@ The condensation prompt instructs the LLM to:
 
 ## Storage Backends
 
-Hippocampus supports 4 storage backends. Each is lazily loaded — unused backends don't require their dependencies to be installed.
+Hippocampus supports 4 storage backends. Backend modules are dynamically imported at runtime — code paths for unused backends are never loaded. SQLite requires `better-sqlite3` as an optional peer dependency; Redis and S3 ship their clients bundled.
 
 ### SQLite (Default)
 
@@ -230,7 +230,7 @@ Fetches existing memory, condenses it with new content via LLM, and stores the r
 - **content** — New conversation content to incorporate
 - **options.prompt** — Per-call condensation prompt override (must include `{{OLD_MEMORY}}`, `{{NEW_CONTENT}}`, `{{MAX_WORDS}}` placeholders)
 - **options.maxWords** — Per-call max words override
-- **Returns** — The condensed memory string, or empty string on failure
+- **Returns** — The condensed memory on success. Falls back to the previously stored memory if the LLM call fails. Returns empty string only when storage or NeuroLink cannot be initialized.
 
 When `options` is omitted, the constructor-level `prompt` and `maxWords` are used.
 
@@ -343,6 +343,17 @@ const result = await neurolink.generate({
 | `REDIS_PASSWORD`         | —       | Redis password fallback                                      |
 | `REDIS_DB`               | —       | Redis database fallback                                      |
 
+### Programmatic Log Control
+
+In addition to `HC_LOG_LEVEL`, log levels can be set at runtime:
+
+```typescript
+import { logger } from "@juspay/hippocampus";
+
+logger.setLevels(["debug", "info"]); // enable specific levels
+logger.setLevels("off");             // disable all logging
+```
+
 ## Error Handling
 
 Hippocampus is designed to never crash the host application:
@@ -350,7 +361,7 @@ Hippocampus is designed to never crash the host application:
 - Every public method is wrapped in try-catch
 - Errors are logged and safe defaults are returned (`null` for `get()`, empty string for `add()`)
 - Storage initialization errors result in the method returning gracefully
-- The `CustomStorage` backend validates that `onGet`, `onSet`, and `onDelete` are functions at construction time
+- The `CustomStorage` callback shape (`onGet`, `onSet`, `onDelete`) is enforced by TypeScript at compile time
 
 ## Type Exports
 
@@ -370,4 +381,4 @@ import type {
 
 ## License
 
-MIT
+[MIT](./LICENSE)

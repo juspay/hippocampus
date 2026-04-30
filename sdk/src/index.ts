@@ -1,5 +1,4 @@
 export { Hippocampus } from './client';
-export { HippocampusError } from './errors';
 export { logger } from './logger';
 export type { LogLevel } from './logger';
 export type {
