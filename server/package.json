@@ -2,6 +2,7 @@
   "name": "@juspay/hippocampus-server",
   "version": "0.1.0",
   "description": "Self-hosted backend memory engine",
+  "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
