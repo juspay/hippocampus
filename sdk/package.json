@@ -25,7 +25,7 @@
     "redis": "^4.0.0"
   },
   "peerDependencies": {
-    "@juspay/neurolink": ">=9.0.0",
+    "@juspay/neurolink": ">=9.70.0",
     "better-sqlite3": ">=11.0.0"
   },
   "peerDependenciesMeta": {
