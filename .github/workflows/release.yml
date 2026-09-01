@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'sdk/**'
+  workflow_dispatch:
 
 jobs:
   publish-sdk:
@@ -13,6 +14,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      id-token: write # Required for OIDC trusted publishing to npm
 
     environment: publish
 
@@ -44,10 +46,16 @@ jobs:
         if: steps.skip-check.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
           cache-dependency-path: sdk/pnpm-lock.yaml
+
+      - name: Upgrade npm for native OIDC publish support
+        if: steps.skip-check.outputs.skip != 'true'
+        run: |
+          npx -y npm@11 install -g npm@11
+          echo "npm version: $(npm --version)"
 
       - name: Install dependencies
         if: steps.skip-check.outputs.skip != 'true'
@@ -114,11 +122,9 @@ jobs:
         id: npm-publish
         working-directory: sdk
         run: |
-          pnpm publish --access public --no-git-checks
-          echo "Published to NPM successfully"
+          npm publish --access public
+          echo "Published to NPM via OIDC trusted publishing"
           echo "publish_success=true" >> $GITHUB_OUTPUT
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Commit version bump and tag
         if: steps.npm-publish.outputs.publish_success == 'true'
