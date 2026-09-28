@@ -41,6 +41,28 @@ export interface CustomStorageConfig {
 
 export type StorageConfig = SqliteStorageConfig | RedisStorageConfig | S3StorageConfig | CustomStorageConfig;
 
+/** The request Hippocampus sends to the condenser's `generate()`. */
+export interface CondenserGenerateOptions {
+  input: { text: string };
+  provider?: string;
+  model?: string;
+  temperature?: number;
+  disableTools?: boolean;
+}
+
+/** The only field Hippocampus reads back from a condensation call. */
+export interface CondenserGenerateResult {
+  content?: string;
+}
+
+/**
+ * Anything with a `generate()` Hippocampus can condense through — a
+ * `NeuroLink` instance satisfies this structurally, and so does a host stub.
+ */
+export interface CondenserInstance {
+  generate(options: CondenserGenerateOptions): Promise<CondenserGenerateResult | null | undefined>;
+}
+
 export interface HippocampusConfig {
   storage?: StorageConfig;
   prompt?: string;
@@ -48,6 +70,18 @@ export interface HippocampusConfig {
     provider?: string;
     model?: string;
     temperature?: number;
+    /**
+     * Credentials for the NeuroLink instance Hippocampus constructs for
+     * condensation (`new NeuroLink({ credentials })`). Same shape as
+     * NeuroLink's `NeurolinkCredentials`; typed loosely so this package does
+     * not depend on NeuroLink's types. Ignored when `instance` is set.
+     */
+    credentials?: Record<string, unknown>;
+    /**
+     * Host-supplied condenser. When set, Hippocampus never constructs its own
+     * NeuroLink and routes every condensation call through this object.
+     */
+    instance?: CondenserInstance;
   };
   maxWords?: number;
 }

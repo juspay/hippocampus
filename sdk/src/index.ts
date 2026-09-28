@@ -11,6 +11,9 @@ export type {
   CustomStorageConfig,
   HippocampusConfig,
   AddOptions,
+  CondenserGenerateOptions,
+  CondenserGenerateResult,
+  CondenserInstance,
 } from './types';
 
 export { SqliteStorage } from './storage/sqlite';

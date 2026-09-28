@@ -1,4 +1,4 @@
-import type { AddOptions, HippocampusConfig, StorageBackend, StorageConfig } from './types';
+import type { AddOptions, CondenserInstance, HippocampusConfig, StorageBackend, StorageConfig } from './types';
 import { logger } from './logger';
 
 const DEFAULT_PROMPT = `You are a memory condensation engine. You receive:
@@ -27,8 +27,7 @@ export class Hippocampus {
   private storageConfig: StorageConfig;
   private prompt: string;
   private maxWords: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private neurolink: any = null;
+  private neurolink: CondenserInstance | null = null;
   private config: HippocampusConfig;
 
   constructor(config: HippocampusConfig = {}) {
@@ -87,16 +86,28 @@ export class Hippocampus {
     return this.storage;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async ensureNeurolink(): Promise<any | null> {
+  private async ensureNeurolink(): Promise<CondenserInstance | null> {
     if (this.neurolink) {
+      return this.neurolink;
+    }
+
+    const supplied = this.config.neurolink?.instance;
+    if (supplied) {
+      this.neurolink = supplied;
+      logger.info('Using host-supplied instance for Hippocampus condensation');
       return this.neurolink;
     }
 
     try {
       const { NeuroLink } = await import('@juspay/neurolink');
-      this.neurolink = new NeuroLink();
-      logger.info('NeuroLink instance created for Hippocampus condensation');
+      const credentials = this.config.neurolink?.credentials;
+      // The constructor options type belongs to whichever NeuroLink the host
+      // installed; only `credentials` is forwarded, and only when given.
+      const options = (credentials ? { credentials } : undefined) as ConstructorParameters<typeof NeuroLink>[0];
+      this.neurolink = new NeuroLink(options);
+      logger.info('NeuroLink instance created for Hippocampus condensation', {
+        withCredentials: credentials !== undefined,
+      });
       return this.neurolink;
     } catch (error) {
       logger.error('Failed to initialize NeuroLink for condensation', {
