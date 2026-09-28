@@ -221,10 +221,20 @@ interface HippocampusConfig {
     provider?: string; // LLM provider (e.g. 'google-ai', 'openai')
     model?: string; // Model name (e.g. 'gemini-2.5-flash')
     temperature?: number; // Default: 0.1
+    credentials?: Record<string, unknown>; // Passed to `new NeuroLink({ credentials })`
+    instance?: CondenserInstance; // Host-supplied condenser; skips constructing NeuroLink
   };
   maxWords?: number; // Default: 50
 }
 ```
+
+By default Hippocampus constructs its own `NeuroLink` for condensation, so
+provider keys come from the environment. Pass `neurolink.credentials` (the same
+shape as NeuroLink's `NeurolinkCredentials`) to hand it keys from a vault
+instead, or `neurolink.instance` — anything with a
+`generate({ input: { text } }) => Promise<{ content?: string }>` — to route
+condensation through an instance the host already owns. `instance` wins over
+`credentials`.
 
 ### `memory.add(ownerId, content, options?): Promise<string>`
 
