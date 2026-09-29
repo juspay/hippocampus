@@ -153,9 +153,12 @@ export class Hippocampus {
       const effectiveMaxWords = options?.maxWords || this.maxWords;
 
       const filledPrompt = effectivePrompt
-        .replaceAll('{{OLD_MEMORY}}', oldMemory || '(none)')
-        .replaceAll('{{NEW_CONTENT}}', content)
-        .replaceAll('{{MAX_WORDS}}', String(effectiveMaxWords));
+        // Function replacers substitute literally. A string replacer
+        // interprets `$&`, `$'`, `$\`` and `$n` in user content, so a message
+        // containing "$&" would re-insert the placeholder into the prompt.
+        .replaceAll('{{OLD_MEMORY}}', () => oldMemory || '(none)')
+        .replaceAll('{{NEW_CONTENT}}', () => content)
+        .replaceAll('{{MAX_WORDS}}', () => String(effectiveMaxWords));
 
       logger.debug('Condensing memory Request', {
         ownerId,
