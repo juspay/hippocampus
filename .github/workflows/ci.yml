@@ -9,25 +9,32 @@ on:
 jobs:
   build-sdk:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['22', '24', '26']
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '18'
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
           cache-dependency-path: sdk/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: sdk
         run: pnpm install --frozen-lockfile
+
+      - name: Security audit
+        working-directory: sdk
+        run: pnpm audit
 
       - name: Lint
         working-directory: sdk

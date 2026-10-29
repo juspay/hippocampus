@@ -1,7 +1,7 @@
 {
   "name": "@juspay/hippocampus",
   "version": "0.2.1",
-  "description": "Embedded memory SDK — condensed key-value memory",
+  "description": "Embedded memory SDK \u2014 condensed key-value memory",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,11 +23,11 @@
     "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.0.0",
-    "redis": "^4.0.0"
+    "@aws-sdk/client-s3": "^3.1159.0",
+    "redis": "^6.3.1"
   },
   "peerDependencies": {
-    "@juspay/neurolink": ">=9.70.0",
+    "@juspay/neurolink": ">=13.8.23",
     "better-sqlite3": ">=11.0.0"
   },
   "peerDependenciesMeta": {
@@ -36,23 +36,45 @@
     }
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
-    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@eslint/js": "^10.0.1",
+    "@juspay/neurolink": "^13.8.23",
+    "@opentelemetry/api": "~1.9.1",
     "@rollup/plugin-replace": "^6.0.3",
-    "@rollup/plugin-typescript": "^12.3.0",
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^22.19.8",
-    "eslint": "^9.39.2",
+    "@rollup/plugin-typescript": "^12.3.1",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22.20.5",
+    "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-unused-imports": "^4.4.1",
-    "prettier": "^3.8.1",
-    "rollup": "^4.57.1",
+    "prettier": "^3.9.10",
+    "rollup": "^4.66.0",
     "tslib": "^2.8.1",
-    "typescript": "^5.6.0",
-    "typescript-eslint": "^8.55.0"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
+  },
+  "pnpm": {
+    "overrides": {
+      "adm-zip@<0.6.1": "^0.6.1",
+      "sharp@<0.35.5": "^0.35.5",
+      "image-size@<2.0.3": "^2.0.4",
+      "uuid@<11.1.1": "^11.1.1",
+      "@opentelemetry/core@>=2.0.0 <2.8.0": "^2.8.0",
+      "@livekit/rtc-node@<1.1.0": "^1.2.1"
+    },
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ],
+    "ignoredBuiltDependencies": [
+      "@google/genai",
+      "@livekit/local-inference",
+      "ffmpeg-static",
+      "msgpackr-extract",
+      "onnxruntime-node",
+      "protobufjs"
+    ]
   },
   "files": [
     "dist"

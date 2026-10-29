@@ -14,10 +14,12 @@ Each user gets a single memory string (keyed by `ownerId`) that is progressively
 pnpm add @juspay/hippocampus
 ```
 
+Requires Node.js 22 or later.
+
 Peer dependencies:
 
 ```bash
-# Required — LLM provider for memory condensation
+# Required — LLM provider for memory condensation (>= 13.8.23)
 pnpm add @juspay/neurolink
 
 # Optional — only if using SQLite storage
