@@ -90,7 +90,7 @@ export class RedisStorage implements StorageBackend {
   async close(): Promise<void> {
     try {
       if (this.client) {
-        await this.client.quit();
+        await this.client.close();
         this.client = null;
         logger.info('Redis storage closed');
       }

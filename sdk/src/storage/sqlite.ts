@@ -56,8 +56,7 @@ export class SqliteStorage implements StorageBackend {
     try {
       const db = this.ensureDb();
       const row = db.prepare('SELECT memory FROM memories WHERE owner_id = ?').get(ownerId) as
-        | { memory: string }
-        | undefined;
+        { memory: string } | undefined;
       return row?.memory ?? null;
     } catch (error) {
       logger.error('SQLite get failed', {

@@ -10,10 +10,12 @@ Each user gets a single memory string (keyed by `ownerId`) that is progressively
 npm install @juspay/hippocampus
 ```
 
+Requires Node.js 22 or later.
+
 Peer dependencies:
 
 ```bash
-# Required — LLM provider for memory condensation
+# Required — LLM provider for memory condensation (>= 13.8.23)
 npm install @juspay/neurolink
 
 # Optional — only if using SQLite storage

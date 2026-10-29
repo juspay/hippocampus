@@ -1,5 +1,4 @@
 import typescript from '@rollup/plugin-typescript';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import packageJson from './package.json' with { type: 'json' };
 
@@ -14,9 +13,8 @@ function config() {
         preserveModules: true,
         preserveModulesRoot: 'src',
       },
-      external: ['@juspay/neurolink', 'better-sqlite3', 'redis', '@aws-sdk/client-s3', 'path', 'fs'],
+      external: ['@juspay/neurolink', 'better-sqlite3', 'redis', '@aws-sdk/client-s3', 'path', 'fs', 'module'],
       plugins: [
-        nodeResolve(),
         replace({
           preventAssignment: true,
           __VERSION__: packageJson.version,
