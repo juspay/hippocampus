@@ -1,7 +1,7 @@
 {
   "name": "@juspay/hippocampus",
-  "version": "0.2.1",
-  "description": "Embedded memory SDK \u2014 condensed key-value memory",
+  "version": "0.2.2",
+  "description": "Embedded memory SDK — condensed key-value memory",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
